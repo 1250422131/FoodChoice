@@ -1,0 +1,10 @@
+[versions]
+androidxComposeBom = "2023.04.00"
+
+[libraries]
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui"}
+androidx-compose-ui-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics"}
+androidx-compose-ui-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview"}
+androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3"}
+androidx-compose-material-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended"}
