@@ -92,7 +92,7 @@ fun CookScreen(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+                ) {
                 CookingIngredientScreen(viewModel, viewStates)
             }
         }
@@ -112,7 +112,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         item {
             // 留白，这里后面是重置功能
             IconButton(
