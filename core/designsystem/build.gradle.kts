@@ -38,18 +38,18 @@ android {
 
 dependencies {
 
-    //网络图片加载
+    // 网络图片加载
     api("io.coil-kt:coil-compose:2.4.0")
-    //systemuicontroller沉浸式实现
+    // systemuicontroller沉浸式实现
     api("com.google.accompanist:accompanist-insets:0.28.0")
     api("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
 
-    //kotlin依赖
+    // kotlin依赖
     api(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     api("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     api("androidx.activity:activity-compose:1.5.1")
 
-    //compose
+    // compose
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.ui)
     api(libs.androidx.compose.ui.ui.graphics)
