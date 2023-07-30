@@ -12,5 +12,11 @@ data class HomeState(
             "http://message.biliimg.com/bfs/im/b9d53ed962c7734c2803ac4a9c409994a4a491b9.jpg",
             route = cookRoute,
         ),
+        HomeItemInfo(
+            "大学生三餐指南",
+            "不知道吃什么？来这里抽取一份食物",
+            "http://message.biliimg.com/bfs/im/b9d53ed962c7734c2803ac4a9c409994a4a491b9.jpg",
+            route = cookRoute,
+        ),
     ),
 ) : UiState

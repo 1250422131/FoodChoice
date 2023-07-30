@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import com.imcys.core.data.repository.CookFoodInfoRepository
 import com.imcys.core.data.repository.CookingIngredientRepository
+import com.imcys.core.database.entity.CookFoodEntity
 import com.imcys.feature.cook.menu.CookSearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Collections.addAll
 import javax.inject.Inject
 
 @HiltViewModel
@@ -88,12 +90,12 @@ class CookViewModel @Inject constructor(
     }
 
     private fun searchFood(name: String) {
-        viewStates = viewStates.copy(searchName = name)
+        viewStates.update { copy(searchName = name) }
         updateSearchResult()
     }
 
     private fun selectTool(tool: String) {
-        viewStates = viewStates.copy(searchTool = tool)
+        viewStates.update { copy(searchTool = tool) }
         updateSearchResult()
     }
 
@@ -103,95 +105,114 @@ class CookViewModel @Inject constructor(
             viewStates.searchStuffs.add(stuff)
         }
         // 因此，我们用一个取巧的办法更新
-        viewStates = viewStates.copy(updateUiState = !viewStates.updateUiState)
+        viewStates.update { copy(updateUiState = !viewStates.updateUiState) }
         updateSearchResult()
     }
 
     // 下面逻辑有待优化
     private fun updateSearchResult() {
-        var resultList = (viewStates.foodsEntity + mutableListOf()).toMutableList()
-        val starIndex = viewStates.foodsEntity.size
+        val resultList = mutableListOf<CookFoodEntity>().apply { addAll(viewStates.foodsEntity) }
+        val startIndex = viewStates.foodsEntity.size
 
-        // 模糊匹配
+        // 通过选择的食材进行过滤
+        applySearchStuffsFilter(resultList)
+        // 通过选择的厨具过滤
+        applySearchToolFilter(resultList)
+        // 通过搜索的内容
+        applySearchNameFilter(resultList)
+
+        clearResultListIfNoSearchConditions(resultList, startIndex)
+        replaceIngredientsAndToolsIcons(resultList)
+
+        viewStates.update { copy(searchResultList = resultList.toList().toMutableList()) }
+    }
+
+    /**
+     * 过滤搜索的食材
+     */
+    private fun applySearchStuffsFilter(resultList: MutableList<CookFoodEntity>) {
+        // 看看是否存在搜索内容
         if (viewStates.searchStuffs.isNotEmpty()) {
-            resultList =
-                // 对所有食物进行检查
-                resultList.filter {
-                    // 假如这个食品所需的食材有任意一个在搜索的条件内就可以
-                    if (viewStates.searchType == CookSearchType.FUZZY_MATCHING) {
-                        it.stuff.split("、").any { mIt -> mIt in viewStates.searchStuffs }
-                    } else {
-                        it.stuff.split("、").all { mIt -> mIt in viewStates.searchStuffs }
-                    }
-                }.toMutableList()
+            // 对每一个元素都检查
+            resultList.retainAll { food ->
+                // 拿到这个食物需要的食材
+                val foodStuffs = food.stuff.split("、")
+                // 根据搜索形式进行不同的匹配
+                if (viewStates.searchType == CookSearchType.FUZZY_MATCHING) {
+                    foodStuffs.any { it in viewStates.searchStuffs }
+                } else {
+                    foodStuffs.all { it in viewStates.searchStuffs }
+                }
+            }
         }
+    }
 
-        // 检查食材需要的厨具
+    /**
+     * 根据用户选择的烹饪厨具进行过滤
+     */
+    private fun applySearchToolFilter(resultList: MutableList<CookFoodEntity>) {
         if (!viewStates.searchTool.isNullOrBlank()) {
-            resultList =
-                resultList.filter { it.tools.contains(viewStates.searchTool.toString()) }
-                    .toMutableList()
+            resultList.retainAll { it.tools.contains(viewStates.searchTool ?: "") }
         }
+    }
 
-        // 检查食材需要的厨具
+    /**
+     * 根据用户输入的名称进行模糊搜索
+     */
+    private fun applySearchNameFilter(resultList: MutableList<CookFoodEntity>) {
         if (!viewStates.searchName.isNullOrBlank()) {
-            resultList =
-                resultList.filter { it.name.contains(viewStates.searchName.toString()) }
-                    .toMutableList()
+            resultList.retainAll { it.name.contains(viewStates.searchName ?: "") }
         }
+    }
 
-        // 这里假如没有任何搜索条件，就直接清空数据，相当于没有搜索
-        if (resultList.size == starIndex) resultList.clear()
+    /**
+     * 校验是否有搜索条件
+     */
+    private fun clearResultListIfNoSearchConditions(
+        resultList: MutableList<CookFoodEntity>,
+        startIndex: Int,
+    ) {
+        // 方式就是判断原resultList长度是否改变
+        if (resultList.size == startIndex) {
+            // 不改变相当于什么也没搜，我们全部清除掉
+            resultList.clear()
+        }
+    }
 
-        // 即使是搜索结束也不行，因为我们得替换出食材和厨具的图标，因此这里有需要检查
-        resultList.forEach {
-            // 确保这个食物还没有被替换过图标
-            if (it.emoji.isBlank()) {
-                // 事实上是返回的数据中，食材：土豆、番茄、茄子，这样的数据就导致我必须要切割一下
-                val emojis = it.stuff.split("、")
-                // 这里给run给了个标签，待会停止foreach需要用到
-                run loop@{
-                    // 大于3个图标就展示1个
-                    if (emojis.size > 3) {
-                        viewStates.cookingIngredientsEntity.forEach { mIt ->
-                            if (mIt.name == emojis[0]) {
-                                it.emoji += mIt.emoji
-                                return@loop
-                            }
-                        }
-                    } else {
-                        // 反之就都展示
-                        emojis.forEach { stuff ->
-                            run loop@{
-                                viewStates.cookingIngredientsEntity.forEach { mIt ->
-
-                                    if (mIt.name == stuff) {
-                                        it.emoji += mIt.emoji
-                                        return@loop
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+    private fun replaceIngredientsAndToolsIcons(resultList: MutableList<CookFoodEntity>) {
+        resultList.forEach { food ->
+            if (food.emoji.isBlank()) {
+                replaceIngredientsIcons(food)
             }
-            // 这块也是一样，只不过是看看厨具信息
-            if (it.image.isBlank()) {
-                run loop@{
-                    viewStates.cookingIngredientsEntity.forEach { cooking ->
-                        // 没搜索厨具
-                        if (viewStates.searchTool.isNullOrBlank() && it.tools == cooking.name) {
-                            it.image = cooking.image ?: ""
-                            return@loop
-                        } else if (cooking.name == viewStates.searchTool) {
-                            it.image = cooking.image ?: ""
-                            return@loop
-                        }
-                    }
+            if (food.image.isBlank()) {
+                replaceToolsIcon(food)
+            }
+        }
+    }
+
+    private fun replaceIngredientsIcons(food: CookFoodEntity) {
+        val emojis = food.stuff.split("、")
+        val matchingIngredient = viewStates.cookingIngredientsEntity.find { it.name == emojis[0] }
+        if (emojis.size > 3 && matchingIngredient != null) {
+            food.emoji += matchingIngredient.emoji
+        } else {
+            emojis.forEach { stuff ->
+                val matchingIngredient =
+                    viewStates.cookingIngredientsEntity.find { it.name == stuff }
+                if (matchingIngredient != null) {
+                    food.emoji += matchingIngredient.emoji
                 }
             }
         }
+    }
 
-        viewStates = viewStates.copy(searchResultList = resultList)
+    private fun replaceToolsIcon(food: CookFoodEntity) {
+        val matchingCookingIngredient =
+            viewStates.cookingIngredientsEntity.find { it.name == food.tools }
+        if (viewStates.searchTool.isNullOrBlank() && matchingCookingIngredient != null) {
+            food.image = matchingCookingIngredient.image ?: ""
+        } else if (matchingCookingIngredient != null && matchingCookingIngredient.name == viewStates.searchTool) {
+            food.image = matchingCookingIngredient.image ?: ""
+        }
     }
 }

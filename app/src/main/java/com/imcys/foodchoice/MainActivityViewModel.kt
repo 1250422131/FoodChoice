@@ -11,12 +11,9 @@ class MainActivityViewModel : ComposeBaseViewModel<MainActivityState, MainActivi
 
     override fun handleEvent(event: MainActivityIntent, state: MainActivityState) {
         when (event) {
-            is MainActivityIntent.SelectNavItem -> {
-                selectNavItem(event.index)
-            }
-
+            is MainActivityIntent.SelectNavItem -> selectNavItem(event.index)
             is MainActivityIntent.SetShowBottomBar -> {
-                viewStates = viewStates.copy(isShowBottomBar = event.state)
+                viewStates.update { copy(isShowBottomBar = event.state) }
             }
         }
     }
@@ -25,8 +22,12 @@ class MainActivityViewModel : ComposeBaseViewModel<MainActivityState, MainActivi
         viewStates = viewStates.copy(titleState = false)
         viewModelScope.launch {
             delay(250L)
-            viewStates = viewStates.copy(titleState = true)
+            viewStates.update {
+                copy(titleState = true)
+            }
         }
-        viewStates = viewStates.copy(navItemIndex = index)
+        viewStates.update {
+            copy(navItemIndex = index)
+        }
     }
 }

@@ -92,7 +92,7 @@ fun CookScreen(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {
+            ) {
                 CookingIngredientScreen(viewModel, viewStates)
             }
         }
@@ -111,27 +111,28 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-
-        ) {
+    ) {
         item {
-            // 留白，这里后面是重置功能
-            IconButton(
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.SoupKitchen,
-                    modifier = Modifier.size(150.dp),
-                    contentDescription = null,
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                // 留白，这里后面是重置功能
+                IconButton(
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.SoupKitchen,
+                        modifier = Modifier.size(150.dp),
+                        contentDescription = null,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "\uD83E\uDD58 挑选你的食材",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                 )
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = "\uD83E\uDD58 挑选你的食材",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-            )
         }
 
         item {
@@ -328,7 +329,7 @@ private fun StuffFlow(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun SearchTypeScreen(
     viewModel: CookViewModel,
     viewStates: CookState,
@@ -379,32 +380,32 @@ private fun TollFlow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             viewStates.cookingIngredientsEntity.filter { it.type == type }
-                .forEachIndexed { index, it ->
+                .forEachIndexed { index, cookingIngredient ->
 
                     ElevatedFilterChip(
-                        selected = it.name == viewStates.searchTool,
-                        label = { Text(it.name) },
+                        selected = cookingIngredient.name == viewStates.searchTool,
+                        label = { Text(cookingIngredient.name) },
                         onClick = {
-                            if (it.name == viewStates.searchTool) {
+                            if (cookingIngredient.name == viewStates.searchTool) {
                                 mSelectedIndex = -1
                                 viewModel.sendIntent(CookIntent.SelectTool(""))
                             } else {
                                 mSelectedIndex = index
-                                viewModel.sendIntent(CookIntent.SelectTool(it.name))
+                                viewModel.sendIntent(CookIntent.SelectTool(cookingIngredient.name))
                             }
                         },
                         leadingIcon = {
-                            if (it.image != null) {
+                            if (cookingIngredient.image != null) {
                                 AsyncImage(
                                     ImageRequest.Builder(LocalContext.current)
-                                        .data(it.image)
+                                        .data(cookingIngredient.image)
                                         .crossfade(true)
                                         .build(),
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
                                 )
                             } else {
-                                Text(text = it.emoji)
+                                Text(text = cookingIngredient.emoji)
                             }
                         },
                     )

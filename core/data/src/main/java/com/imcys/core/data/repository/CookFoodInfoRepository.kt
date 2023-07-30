@@ -9,7 +9,9 @@ class CookFoodInfoRepository @Inject constructor(
     private val cookFoodDao: CookFoodDao,
 ) {
     suspend fun getCookingFoods(stuff: String) =
-        run { cookFoodDao.selectByStuffList(stuff) }
+        run {
+            cookFoodDao.selectByStuffList(stuff)
+        }
 
     suspend fun getCookingFoods() =
         run { cookFoodDao.selectList() }
@@ -22,7 +24,7 @@ class CookFoodInfoRepository @Inject constructor(
         if (cookingFoodInfoResult.isSuccess) {
             // 较为复杂的但写法清爽语法糖
             cookingFoodInfoResult.getOrNull()?.data?.forEach {
-                cookFoodDao.selectByNameList(it.name)?.apply {
+                cookFoodDao.selectByName(it.name)?.apply {
                     cookFoodDao.update(it.asCookFoodEntity().copy(id = id))
                 } ?: apply {
                     cookFoodDao.inserts(it.asCookFoodEntity())

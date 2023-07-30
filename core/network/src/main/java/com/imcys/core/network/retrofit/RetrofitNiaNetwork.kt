@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitNiaNetwork {
 
-    val networkApi = Retrofit.Builder()
+    val networkApi: RetrofitNiaNetworkApi = Retrofit.Builder()
         .baseUrl("https://api.misakamoe.com/app/cook/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
