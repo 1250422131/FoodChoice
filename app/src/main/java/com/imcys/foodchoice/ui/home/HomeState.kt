@@ -9,7 +9,7 @@ data class HomeState(
         HomeItemInfo(
             "烹饪指南",
             "不知道做什么菜？来这里看看",
-            "http://message.biliimg.com/bfs/im/b9d53ed962c7734c2803ac4a9c409994a4a491b9.jpg",
+            "https://message.biliimg.com/bfs/im/b9d53ed962c7734c2803ac4a9c409994a4a491b9.jpg",
             route = cookRoute,
         ),
         HomeItemInfo(
