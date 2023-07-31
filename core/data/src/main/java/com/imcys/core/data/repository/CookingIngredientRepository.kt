@@ -1,5 +1,7 @@
 package com.imcys.core.data.repository
 
+import com.imcys.core.common.data.BaseRepository
+import com.imcys.core.data.repository.extend.asCookingIngredientEntity
 import com.imcys.core.database.dao.CookingIngredientDao
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.model.CookingIngredient
@@ -8,7 +10,7 @@ import javax.inject.Inject
 
 class CookingIngredientRepository @Inject constructor(
     private val cookingIngredientDao: CookingIngredientDao,
-) {
+) : BaseRepository() {
 
     suspend fun getCookingIngredients(type: Int) =
         run { cookingIngredientDao.selectByTypeList(type) }
@@ -17,7 +19,7 @@ class CookingIngredientRepository @Inject constructor(
 
     suspend fun getCookingIngredient(name: String) = run { cookingIngredientDao.selectByName(name) }
 
-    suspend fun syncWith(): Boolean {
+    override suspend fun syncWithData(): Boolean {
         val cookingIngredientResult = runCatching {
             RetrofitNiaNetwork.networkApi.getCookingIngredients()
         }
@@ -56,25 +58,12 @@ class CookingIngredientRepository @Inject constructor(
     private suspend fun updateCheck(cookingIngredientList: List<CookingIngredient>, type: Int) {
         cookingIngredientList.forEach {
             cookingIngredientDao.selectByName(it.name)?.apply {
-                name = it.name
-                label = it.label
-                emoji = it.emoji
-                alias = it.alias
-                image = it.image
-                this.type = type
-                cookingIngredientDao.update(this)
+                cookingIngredientDao.update(
+                    it.asCookingIngredientEntity().copy(id = this.id, type = type),
+                )
             } ?: apply {
                 // 反之插入
-                cookingIngredientDao.inserts(
-                    CookingIngredientEntity(
-                        name = it.name,
-                        label = it.label,
-                        emoji = it.emoji,
-                        alias = it.alias,
-                        image = it.image,
-                        type = type,
-                    ),
-                )
+                cookingIngredientDao.inserts(it.asCookingIngredientEntity().copy(type = type))
             }
         }
     }

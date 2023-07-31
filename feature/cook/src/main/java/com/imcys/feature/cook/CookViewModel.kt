@@ -46,7 +46,7 @@ class CookViewModel @Inject constructor(
         viewStates =
             viewStates.copy(foodsEntity = cookFoodInfoRepository.getCookingFoods())
 
-        if (cookFoodInfoRepository.syncWith()) {
+        if (cookFoodInfoRepository.syncWithData()) {
             viewStates =
                 viewStates.copy(foodsEntity = cookFoodInfoRepository.getCookingFoods())
         }
@@ -58,7 +58,7 @@ class CookViewModel @Inject constructor(
             viewStates.copy(cookingIngredientsEntity = cookingIngredientRepository.getCookingIngredients())
 
         // 同步后更新加载
-        if (cookingIngredientRepository.syncWith()) {
+        if (cookingIngredientRepository.syncWithData()) {
             // 成功
             viewStates =
                 viewStates.copy(cookingIngredientsEntity = cookingIngredientRepository.getCookingIngredients())

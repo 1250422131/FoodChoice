@@ -1,5 +1,6 @@
 package com.imcys.core.data.repository
 
+import com.imcys.core.common.data.BaseRepository
 import com.imcys.core.data.repository.extend.asCookFoodEntity
 import com.imcys.core.database.dao.CookFoodDao
 import com.imcys.core.network.retrofit.RetrofitNiaNetwork
@@ -7,7 +8,7 @@ import javax.inject.Inject
 
 class CookFoodInfoRepository @Inject constructor(
     private val cookFoodDao: CookFoodDao,
-) {
+) : BaseRepository() {
     suspend fun getCookingFoods(stuff: String) =
         run {
             cookFoodDao.selectByStuffList(stuff)
@@ -16,22 +17,25 @@ class CookFoodInfoRepository @Inject constructor(
     suspend fun getCookingFoods() =
         run { cookFoodDao.selectList() }
 
-    suspend fun syncWith(): Boolean {
-        val cookingFoodInfoResult = runCatching {
+    override suspend fun syncWithData(): Boolean {
+        val cookingFoodDataResult = runCatching {
             RetrofitNiaNetwork.networkApi.getCookFoodData()
         }
         // 成功的前提下进行
-        if (cookingFoodInfoResult.isSuccess) {
+        if (cookingFoodDataResult.isSuccess) {
             // 较为复杂的但写法清爽语法糖
-            cookingFoodInfoResult.getOrNull()?.data?.forEach {
-                cookFoodDao.selectByName(it.name)?.apply {
-                    cookFoodDao.update(it.asCookFoodEntity().copy(id = id))
+            val cookingFoodData = cookingFoodDataResult.getOrNull()?.data
+            cookingFoodData?.forEach { food ->
+                cookFoodDao.selectByName(food.name)?.apply {
+                    // 查询到了就更新
+                    cookFoodDao.update(food.asCookFoodEntity().copy(id = id))
                 } ?: apply {
-                    cookFoodDao.inserts(it.asCookFoodEntity())
+                    // 没查到就插入
+                    cookFoodDao.inserts(food.asCookFoodEntity())
                 }
             }
         }
 
-        return cookingFoodInfoResult.isSuccess
+        return cookingFoodDataResult.isSuccess
     }
 }
