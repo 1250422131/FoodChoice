@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.imcys.core.common.viewmodel.ui.BaseComponentActivity
 import com.imcys.core.designsystem.theme.FoodChoiceTheme
 import com.imcys.foodchoice.ui.FoodApp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseComponentActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
 

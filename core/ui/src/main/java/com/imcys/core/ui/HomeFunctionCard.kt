@@ -3,6 +3,7 @@ package com.imcys.core.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,10 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,12 +66,15 @@ fun HomeFunctionCard(
                     .fillMaxWidth()
                     .padding(12.dp),
             ) {
-                Text(text = title, fontSize = 20.sp)
+                Text(
+                    text = title, fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                )
                 Spacer(Modifier.height(12.dp))
                 Text(
                     text = content,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.ExtraBold,
                 )
             }
         }

@@ -3,6 +3,8 @@ package com.imcys.foodchoice
 import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel : ComposeBaseViewModel<MainActivityState, MainActivityIntent>(

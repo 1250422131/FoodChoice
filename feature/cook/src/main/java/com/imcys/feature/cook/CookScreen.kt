@@ -1,5 +1,6 @@
 package com.imcys.feature.cook
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,8 @@ import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,26 +34,63 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.imcys.core.data.repository.CookFoodInfoRepository
+import com.imcys.core.data.repository.CookingIngredientRepository
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
 import com.imcys.feature.cook.menu.CookSearchType
+import dagger.hilt.android.qualifiers.ApplicationContext
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(
+    name = "ElevatedFilterChip",
+)
+@Composable
+fun CookElevatedFilterChipPreview() {
+    ElevatedFilterChip(
+        selected = false,
+        label = { Text("菜品") },
+        onClick = {
+        },
+        leadingIcon = {
+            Text(text = "🔥")
+        },
+        trailingIcon = {
+            AsyncImage(
+                ImageRequest.Builder(LocalContext.current)
+                    .data("https://img1.imgtp.com/2023/07/09/TilgZLzU.png")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.size(15.dp),
+                colorFilter = ColorFilter.tint(LocalContentColor.current)
+            )
+        },
+    )
+}
+
 
 @Composable
 fun CookRoute(
     modifier: Modifier = Modifier,
     viewModel: CookViewModel = hiltViewModel(),
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
 ) {
     CookScreen(
         modifier = modifier,
@@ -92,7 +132,7 @@ fun CookScreen(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+                ) {
                 CookingIngredientScreen(viewModel, viewStates)
             }
         }
@@ -113,26 +153,24 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                // 留白，这里后面是重置功能
-                IconButton(
-                    onClick = {},
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.SoupKitchen,
-                        modifier = Modifier.size(150.dp),
-                        contentDescription = null,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = "\uD83E\uDD58 挑选你的食材",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+            // 留白，这里后面是重置功能
+            IconButton(
+                onClick = {},
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.SoupKitchen,
+                    modifier = Modifier.size(150.dp),
+                    contentDescription = null,
                 )
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "\uD83E\uDD58 挑选你的食材",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
 
         item {
@@ -225,6 +263,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier.size(15.dp),
+                            colorFilter = ColorFilter.tint(LocalContentColor.current)
                         )
                     },
                 )
@@ -233,49 +272,6 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun ResultFlow(viewModel: CookViewModel, viewStates: CookState) {
-    Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = "看看可以做什么？",
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            viewStates.searchResultList.forEach {
-                ElevatedFilterChip(
-                    selected = false,
-                    label = { Text(it.name) },
-                    onClick = {
-                        viewModel.sendIntent(CookIntent.ToBiliBili(it.bv))
-                    },
-                    leadingIcon = {
-                        Text(text = it.emoji)
-                    },
-                    trailingIcon = {
-                        AsyncImage(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(it.image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier.size(15.dp),
-                        )
-                    },
-                )
-            }
-        }
-    }
-}
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -403,6 +399,7 @@ private fun TollFlow(
                                         .build(),
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
+                                    colorFilter = ColorFilter.tint(LocalContentColor.current)
                                 )
                             } else {
                                 Text(text = cookingIngredient.emoji)

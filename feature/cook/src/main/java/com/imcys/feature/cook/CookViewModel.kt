@@ -72,7 +72,7 @@ class CookViewModel @Inject constructor(
             is CookIntent.InputSearchKeyword -> searchFood(event.name)
             is CookIntent.ToBiliBili -> toBiliBili(event.bvId)
             is CookIntent.UpdateSearchType -> {
-                viewStates = viewStates.copy(searchType = event.type)
+                viewStates.update { copy(searchType = event.type) }
                 updateSearchResult()
             }
         }
@@ -120,10 +120,11 @@ class CookViewModel @Inject constructor(
         applySearchToolFilter(resultList)
         // 通过搜索的内容
         applySearchNameFilter(resultList)
-
+        // 检查是否有搜索条件过滤，假如没有就清空
         clearResultListIfNoSearchConditions(resultList, startIndex)
+        // 替换搜索结果的图标
         replaceIngredientsAndToolsIcons(resultList)
-
+        // 更新执行结果
         viewStates.update { copy(searchResultList = resultList.toList().toMutableList()) }
     }
 
