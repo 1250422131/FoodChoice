@@ -1,9 +1,9 @@
-package com.imcys.core.data.repository.extend
+package com.imcys.core.data.extend
 
 import com.imcys.core.database.entity.CookFoodEntity
 import com.imcys.core.database.entity.CookingIngredientEntity
-import com.imcys.core.model.CookFoodInfo
-import com.imcys.core.model.CookingIngredient
+import com.imcys.core.model.cook.CookFoodInfo
+import com.imcys.core.model.cook.CookingIngredient
 
 fun CookFoodInfo.Data.asCookFoodEntity() =
     CookFoodEntity(

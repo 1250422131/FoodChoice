@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -29,7 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -76,16 +75,19 @@ fun FoodApp(
                                 exit = slideOutVertically(targetOffsetY = { -it }),
                             ) {
                                 Text(
-                                    fontWeight = FontWeight.W900,
+                                    overflow = TextOverflow.Ellipsis,
                                     text = viewStates.run { navItems[navItemIndex].label },
                                 )
                             }
                         },
                         actions = {
-                            IconButton(onClick = {  }) {
-                                Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = null,Modifier.size(30.dp))
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.AccountCircle,
+                                    contentDescription = null,
+                                )
                             }
-                        }
+                        },
 
                     )
                 }
@@ -130,9 +132,7 @@ fun FoodApp(
     ) {
         Spacer(modifier = Modifier.width(5.dp))
         Row(modifier = Modifier.padding(it)) {
-            Spacer(modifier = Modifier.width(16.dp))
             FCNavHost(navController = navController, modifier = Modifier.weight(1f))
-            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 }

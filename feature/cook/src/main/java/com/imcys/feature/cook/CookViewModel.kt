@@ -6,15 +6,14 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
-import com.imcys.core.data.repository.CookFoodInfoRepository
-import com.imcys.core.data.repository.CookingIngredientRepository
+import com.imcys.core.data.repository.cook.CookFoodInfoRepository
+import com.imcys.core.data.repository.cook.CookingIngredientRepository
 import com.imcys.core.database.entity.CookFoodEntity
 import com.imcys.feature.cook.menu.CookSearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Collections.addAll
 import javax.inject.Inject
 
 @HiltViewModel

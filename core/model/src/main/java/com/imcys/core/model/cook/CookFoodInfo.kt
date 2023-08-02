@@ -1,4 +1,4 @@
-package com.imcys.core.model
+package com.imcys.core.model.cook
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable

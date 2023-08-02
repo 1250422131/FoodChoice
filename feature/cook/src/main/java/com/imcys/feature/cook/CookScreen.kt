@@ -1,6 +1,5 @@
 package com.imcys.feature.cook
 
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,29 +15,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.SoupKitchen
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,12 +49,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.imcys.core.data.repository.CookFoodInfoRepository
-import com.imcys.core.data.repository.CookingIngredientRepository
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
 import com.imcys.feature.cook.menu.CookSearchType
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(
@@ -79,12 +75,11 @@ fun CookElevatedFilterChipPreview() {
                     .build(),
                 contentDescription = null,
                 modifier = Modifier.size(15.dp),
-                colorFilter = ColorFilter.tint(LocalContentColor.current)
+                colorFilter = ColorFilter.tint(LocalContentColor.current),
             )
         },
     )
 }
-
 
 @Composable
 fun CookRoute(
@@ -108,6 +103,7 @@ fun CookScreen(
     viewStates: CookState,
     navController: NavHostController,
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -115,12 +111,21 @@ fun CookScreen(
                 AnimatedVisibility(
                     viewStates.isShowBottomBar,
                 ) {
-                    CenterAlignedTopAppBar(
+                    LargeTopAppBar(
+                        scrollBehavior = scrollBehavior,
                         title = {
                             Text(
                                 fontWeight = FontWeight.W900,
                                 text = "烹饪指南",
                             )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowBack,
+                                    contentDescription = null,
+                                )
+                            }
                         },
                     )
                 }
@@ -129,11 +134,11 @@ fun CookScreen(
     ) {
         PageContentColumn(Modifier.padding(it)) {
             Column(
-                Modifier.fillMaxSize(),
+                Modifier.fillMaxSize().padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {
-                CookingIngredientScreen(viewModel, viewStates)
+            ) {
+                CookingIngredientScreen(viewModel, viewStates, scrollBehavior)
             }
         }
     }
@@ -145,27 +150,18 @@ fun CookScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
-    Spacer(modifier = Modifier.height(10.dp))
+fun CookingIngredientScreen(
+    viewModel: CookViewModel,
+    viewStates: CookState,
+    pinnedScrollBehavior: TopAppBarScrollBehavior,
+) {
     LazyColumn(
         Modifier
-            .fillMaxSize(),
+            .fillMaxSize().nestedScroll(pinnedScrollBehavior.nestedScrollConnection),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             // 留白，这里后面是重置功能
-            IconButton(
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.SoupKitchen,
-                    modifier = Modifier.size(150.dp),
-                    contentDescription = null,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             Text(
                 text = "\uD83E\uDD58 挑选你的食材",
                 fontSize = 20.sp,
@@ -174,6 +170,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         }
 
         item {
+            // 查询过滤条件块
             StuffFlow(
                 "\uD83E\uDD6C 菜菜们",
                 viewModel,
@@ -199,6 +196,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         }
 
         item {
+            // 搜索结果块
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
@@ -211,33 +209,15 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
                 viewModel,
                 viewStates,
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            OutlinedTextField(
-                singleLine = true, // 设置为单行模式
-                value = viewStates.searchName ?: "",
-                textStyle = TextStyle(fontSize = 15.sp), // 调整文字大小
-                shape = CardDefaults.shape,
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth(),
-                onValueChange = { viewModel.sendIntent(CookIntent.InputSearchKeyword(it)) },
-                placeholder = { Text(text = "过滤一下", fontSize = 15.sp) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Rounded.Search, contentDescription = "搜索图标")
-                },
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
         }
 
         item {
+            // 搜索结果展示块
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = "看看可以做什么？",
-                fontSize = 15.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -245,6 +225,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         }
 
         items(viewStates.searchResultList) {
+            // 搜索结果集
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                 ElevatedFilterChip(
                     selected = false,
@@ -263,7 +244,7 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier.size(15.dp),
-                            colorFilter = ColorFilter.tint(LocalContentColor.current)
+                            colorFilter = ColorFilter.tint(LocalContentColor.current),
                         )
                     },
                 )
@@ -271,7 +252,6 @@ fun CookingIngredientScreen(viewModel: CookViewModel, viewStates: CookState) {
         }
     }
 }
-
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -286,7 +266,7 @@ private fun StuffFlow(
 
         Text(
             text = title,
-            fontSize = 15.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
         )
@@ -349,6 +329,25 @@ private fun SearchTypeScreen(
             },
         )
     }
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    OutlinedTextField(
+        singleLine = true, // 设置为单行模式
+        value = viewStates.searchName ?: "",
+        textStyle = TextStyle(fontSize = 15.sp), // 调整文字大小
+        shape = CardDefaults.shape,
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth(),
+        onValueChange = { viewModel.sendIntent(CookIntent.InputSearchKeyword(it)) },
+        placeholder = { Text(text = "过滤一下", fontSize = 15.sp) },
+        leadingIcon = {
+            Icon(imageVector = Icons.Rounded.Search, contentDescription = "搜索图标")
+        },
+    )
+
+    Spacer(modifier = Modifier.height(10.dp))
 }
 
 @Composable
@@ -364,7 +363,7 @@ private fun TollFlow(
 
         Text(
             text = title,
-            fontSize = 15.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
         )
@@ -399,7 +398,7 @@ private fun TollFlow(
                                         .build(),
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
-                                    colorFilter = ColorFilter.tint(LocalContentColor.current)
+                                    colorFilter = ColorFilter.tint(LocalContentColor.current),
                                 )
                             } else {
                                 Text(text = cookingIngredient.emoji)

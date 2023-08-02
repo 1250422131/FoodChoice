@@ -1,9 +1,9 @@
-package com.imcys.core.data.repository
+package com.imcys.core.data.repository.cook
 
 import com.imcys.core.common.data.BaseRepository
-import com.imcys.core.data.repository.extend.asCookFoodEntity
+import com.imcys.core.data.extend.asCookFoodEntity
 import com.imcys.core.database.dao.CookFoodDao
-import com.imcys.core.network.retrofit.RetrofitNiaNetwork
+import com.imcys.core.network.retrofit.RetrofitAppNetwork
 import javax.inject.Inject
 
 class CookFoodInfoRepository @Inject constructor(
@@ -19,7 +19,7 @@ class CookFoodInfoRepository @Inject constructor(
 
     override suspend fun syncWithData(): Boolean {
         val cookingFoodDataResult = runCatching {
-            RetrofitNiaNetwork.networkApi.getCookFoodData()
+            RetrofitAppNetwork.networkApi.getCookFoodData()
         }
         // 成功的前提下进行
         if (cookingFoodDataResult.isSuccess) {

@@ -1,3 +1,3 @@
 package com.imcys.feature.cook.navigation
 
-const val cookRoute = "feature_cook"
+const val cookRoute = "feature/cook"
