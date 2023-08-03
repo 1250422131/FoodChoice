@@ -14,6 +14,9 @@ interface CookFoodDao {
     @Query("SELECT * from fc_cook_food where name = :name")
     suspend fun selectByName(name: String): CookFoodEntity?
 
+    @Query("SELECT * from fc_cook_food where bv = :bvId")
+    suspend fun selectByBvId(bvId: String): CookFoodEntity?
+
     @Query("SELECT * from fc_cook_food ORDER BY id DESC")
     suspend fun selectList(): MutableList<CookFoodEntity>
 

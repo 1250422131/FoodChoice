@@ -9,9 +9,9 @@ import javax.inject.Inject
 class CookFoodInfoRepository @Inject constructor(
     private val cookFoodDao: CookFoodDao,
 ) : BaseRepository() {
-    suspend fun getCookingFoods(stuff: String) =
+    suspend fun getCookingFood(bvId: String) =
         run {
-            cookFoodDao.selectByStuffList(stuff)
+            cookFoodDao.selectByBvId(bvId)
         }
 
     suspend fun getCookingFoods() =

@@ -1,6 +1,5 @@
 package com.imcys.feature.cook
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -106,42 +105,38 @@ fun CookScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Column {
-                AnimatedVisibility(
-                    viewStates.isShowBottomBar,
-                ) {
-                    LargeTopAppBar(
-                        scrollBehavior = scrollBehavior,
-                        title = {
-                            Text(
-                                fontWeight = FontWeight.W900,
-                                text = "烹饪指南",
+                LargeTopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            fontWeight = FontWeight.W900,
+                            text = "烹饪指南",
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Outlined.ArrowBack,
+                                contentDescription = null,
                             )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.ArrowBack,
-                                    contentDescription = null,
-                                )
-                            }
-                        },
-                    )
-                }
+                        }
+                    },
+                )
             }
         },
     ) {
-        PageContentColumn(Modifier.padding(it)) {
+        PageContentColumn(Modifier.padding(top = it.calculateTopPadding())) {
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {
-                CookingIngredientScreen(viewModel, viewStates, scrollBehavior, navController)
+            ) {
+                CookingIngredientScreen(viewModel, viewStates, navController)
             }
         }
     }
@@ -156,16 +151,14 @@ fun CookScreen(
 fun CookingIngredientScreen(
     viewModel: CookViewModel,
     viewStates: CookState,
-    pinnedScrollBehavior: TopAppBarScrollBehavior,
     navController: NavHostController,
 ) {
     LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .nestedScroll(pinnedScrollBehavior.nestedScrollConnection),
+        Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
+            Spacer(modifier = Modifier.height(10.dp))
             // 留白，这里后面是重置功能
             Text(
                 text = "\uD83E\uDD58 挑选你的食材",

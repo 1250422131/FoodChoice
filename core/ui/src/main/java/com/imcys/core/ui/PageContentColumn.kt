@@ -14,12 +14,11 @@ fun PageContentColumn(
     modifier: Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(modifier) {
-        Spacer(modifier = Modifier.width(5.dp))
-        Row {
-            Spacer(modifier = Modifier.width(16.dp))
-            content.invoke(this@Column)
-            Spacer(modifier = Modifier.width(16.dp))
+    Row(modifier) {
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(Modifier.weight(1f)) {
+            content.invoke(this)
         }
+        Spacer(modifier = Modifier.width(16.dp))
     }
 }

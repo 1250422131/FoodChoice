@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
 
     implementation("androidx.core:core-ktx:1.8.0")

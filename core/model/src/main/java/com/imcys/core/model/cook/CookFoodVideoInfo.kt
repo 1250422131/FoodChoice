@@ -5,25 +5,25 @@ import java.io.Serializable
 
 data class CookFoodVideoInfo(
     @SerializedName("code")
-    val code: Int,
+    val code: Long,
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("message")
     val message: String,
     @SerializedName("ttl")
-    val ttl: Int,
+    val ttl: Long,
 ) : Serializable {
     data class Data(
         @SerializedName("aid")
-        val aid: Int,
+        val aid: Long,
         @SerializedName("bvid")
         val bvid: String,
         @SerializedName("cid")
-        val cid: Int,
+        val cid: Long,
         @SerializedName("copyright")
-        val copyright: Int,
+        val copyright: Long,
         @SerializedName("ctime")
-        val ctime: Int,
+        val ctime: Long,
         @SerializedName("desc")
         val desc: String,
         @SerializedName("desc_v2")
@@ -33,11 +33,11 @@ data class CookFoodVideoInfo(
         @SerializedName("disable_show_up_info")
         val disableShowUpInfo: Boolean,
         @SerializedName("duration")
-        val duration: Int,
+        val duration: Long,
         @SerializedName("dynamic")
         val `dynamic`: String,
         @SerializedName("enable_vt")
-        val enableVt: Int,
+        val enableVt: Long,
         @SerializedName("honor_reply")
         val honorReply: HonorReply,
         @SerializedName("is_chargeable_season")
@@ -65,19 +65,19 @@ data class CookFoodVideoInfo(
         @SerializedName("premiere")
         val premiere: Any,
         @SerializedName("pubdate")
-        val pubdate: Int,
+        val pubdate: Long,
         @SerializedName("rights")
         val rights: Rights,
         @SerializedName("stat")
         val stat: Stat,
         @SerializedName("state")
-        val state: Int,
+        val state: Long,
         @SerializedName("subtitle")
         val subtitle: Subtitle,
         @SerializedName("teenage_mode")
-        val teenageMode: Int,
+        val teenageMode: Long,
         @SerializedName("tid")
-        val tid: Int,
+        val tid: Long,
         @SerializedName("title")
         val title: String,
         @SerializedName("tname")
@@ -85,24 +85,24 @@ data class CookFoodVideoInfo(
         @SerializedName("user_garb")
         val userGarb: UserGarb,
         @SerializedName("videos")
-        val videos: Int,
+        val videos: Long,
     ) {
         data class DescV2(
             @SerializedName("biz_id")
-            val bizId: Int,
+            val bizId: Long,
             @SerializedName("raw_text")
             val rawText: String,
             @SerializedName("type")
-            val type: Int,
+            val type: Long,
         ) : Serializable
 
         data class Dimension(
             @SerializedName("height")
-            val height: Int,
+            val height: Long,
             @SerializedName("rotate")
-            val rotate: Int,
+            val rotate: Long,
             @SerializedName("width")
-            val width: Int,
+            val width: Long,
         ) : Serializable
 
         class HonorReply : Serializable
@@ -111,24 +111,24 @@ data class CookFoodVideoInfo(
             @SerializedName("face")
             val face: String,
             @SerializedName("mid")
-            val mid: Int,
+            val mid: Long,
             @SerializedName("name")
             val name: String,
         ) : Serializable
 
         data class Page(
             @SerializedName("cid")
-            val cid: Int,
+            val cid: Long,
             @SerializedName("dimension")
             val dimension: Dimension,
             @SerializedName("duration")
-            val duration: Int,
+            val duration: Long,
             @SerializedName("first_frame")
             val firstFrame: String,
             @SerializedName("from")
             val from: String,
             @SerializedName("page")
-            val page: Int,
+            val page: Long,
             @SerializedName("part")
             val part: String,
             @SerializedName("vid")
@@ -138,82 +138,82 @@ data class CookFoodVideoInfo(
         ) : Serializable {
             data class Dimension(
                 @SerializedName("height")
-                val height: Int,
+                val height: Long,
                 @SerializedName("rotate")
-                val rotate: Int,
+                val rotate: Long,
                 @SerializedName("width")
-                val width: Int,
+                val width: Long,
             ) : Serializable
         }
 
         data class Rights(
             @SerializedName("arc_pay")
-            val arcPay: Int,
+            val arcPay: Long,
             @SerializedName("autoplay")
-            val autoplay: Int,
+            val autoplay: Long,
             @SerializedName("bp")
-            val bp: Int,
+            val bp: Long,
             @SerializedName("clean_mode")
-            val cleanMode: Int,
+            val cleanMode: Long,
             @SerializedName("download")
-            val download: Int,
+            val download: Long,
             @SerializedName("elec")
-            val elec: Int,
+            val elec: Long,
             @SerializedName("free_watch")
-            val freeWatch: Int,
+            val freeWatch: Long,
             @SerializedName("hd5")
-            val hd5: Int,
+            val hd5: Long,
             @SerializedName("is_360")
-            val is360: Int,
+            val is360: Long,
             @SerializedName("is_cooperation")
-            val isCooperation: Int,
+            val isCooperation: Long,
             @SerializedName("is_stein_gate")
-            val isSteinGate: Int,
+            val isSteinGate: Long,
             @SerializedName("movie")
-            val movie: Int,
+            val movie: Long,
             @SerializedName("no_background")
-            val noBackground: Int,
+            val noBackground: Long,
             @SerializedName("no_reprint")
-            val noReprint: Int,
+            val noReprint: Long,
             @SerializedName("no_share")
-            val noShare: Int,
+            val noShare: Long,
             @SerializedName("pay")
-            val pay: Int,
+            val pay: Long,
             @SerializedName("ugc_pay")
-            val ugcPay: Int,
+            val ugcPay: Long,
             @SerializedName("ugc_pay_preview")
-            val ugcPayPreview: Int,
+            val ugcPayPreview: Long,
         ) : Serializable
 
         data class Stat(
             @SerializedName("aid")
-            val aid: Int,
+            val aid: Long,
             @SerializedName("argue_msg")
             val argueMsg: String,
             @SerializedName("coin")
-            val coin: Int,
+            val coin: Long,
             @SerializedName("danmaku")
-            val danmaku: Int,
+            val danmaku: Long,
             @SerializedName("dislike")
-            val dislike: Int,
+            val dislike: Long,
             @SerializedName("evaluation")
             val evaluation: String,
             @SerializedName("favorite")
-            val favorite: Int,
+            val favorite: Long,
             @SerializedName("his_rank")
-            val hisRank: Int,
+            val hisRank: Long,
             @SerializedName("like")
-            val like: Int,
+            val like: Long,
             @SerializedName("now_rank")
-            val nowRank: Int,
+            val nowRank: Long,
             @SerializedName("reply")
-            val reply: Int,
+            val reply: Long,
             @SerializedName("share")
-            val share: Int,
+            val share: Long,
             @SerializedName("view")
-            val view: Int,
+            val view: Long,
             @SerializedName("vt")
-            val vt: Int,
+            val vt: Long,
         ) : Serializable
 
         data class Subtitle(

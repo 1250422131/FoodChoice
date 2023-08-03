@@ -2,8 +2,12 @@ package com.imcys.feature.cook.ui.info
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,11 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.LottieAnimationView
+import com.imcys.core.ui.CookInfoVideoCard
 import com.imcys.core.ui.PageContentColumn
 
 @Composable
@@ -44,7 +52,7 @@ fun CookInfoRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CookInfoScreen(
+private fun CookInfoScreen(
     modifier: Modifier,
     viewModel: CookInfoViewModel,
     viewStates: CookInfoState,
@@ -52,7 +60,7 @@ fun CookInfoScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Column {
                 AnimatedVisibility(
@@ -79,11 +87,50 @@ fun CookInfoScreen(
             }
         },
     ) {
-        PageContentColumn(Modifier.padding(it)) {
+        PageContentColumn(Modifier.padding(top = it.calculateTopPadding())) {
             Column(
-                Modifier.fillMaxSize().padding(16.dp, 0.dp, 16.dp, 0.dp),
+                Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(modifier = Modifier.height(10.dp))
+                CookInfoContent(viewModel, viewStates)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CookInfoContent(
+    viewModel: CookInfoViewModel,
+    viewStates: CookInfoState,
+) {
+    LazyColumn(Modifier.fillMaxWidth()) {
+        item {
+            if (viewStates.foodVideoInfo == null) {
+                AndroidView(
+                    factory = {
+                        val lottieAnimationView = LottieAnimationView(it)
+                        lottieAnimationView
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { view ->
+                    view.setAnimationFromUrl("https://lottie.host/ab850fa7-9eec-4b24-b90c-e72578b9b1d2/L09HY3tGWB.json")
+                    view.loop(true)
+                    view.playAnimation()
+                }
+            }
+        }
+
+        viewStates.foodVideoInfo?.data?.apply {
+            item {
+                CookInfoVideoCard(
+                    title = title,
+                    content = desc,
+                    thumbnailUrl = pic,
+                    avatarUrl = owner.face,
+                    duration = duration,
+                    view = stat.view,
+                )
             }
         }
     }

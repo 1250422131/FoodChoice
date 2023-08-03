@@ -47,7 +47,7 @@ dependencies {
     // kotlin依赖
     api(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     api("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    api("androidx.activity:activity-compose:1.5.1")
+    api("androidx.activity:activity-compose:1.7.2")
 
     // compose
     api(platform(libs.androidx.compose.bom))
@@ -57,6 +57,7 @@ dependencies {
     api(libs.androidx.compose.ui.ui.tooling.preview)
     api(libs.androidx.compose.material.material.icons.extended)
     api(libs.androidx.compose.material3.material3)
+    api(libs.com.airbnb.android.lottie)
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.1")

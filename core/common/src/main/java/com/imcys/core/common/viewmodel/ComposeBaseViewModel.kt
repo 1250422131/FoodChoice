@@ -11,6 +11,7 @@ import com.imcys.core.common.viewmodel.info.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
@@ -32,7 +33,7 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
 
     private fun handleIntent() {
         viewModelScope.launch(Dispatchers.IO) {
-            intentChannel.consumeAsFlow().collect {
+            intentChannel.consumeAsFlow().filterNotNull().collect {
                 handleEvent(it, viewStates)
             }
         }
