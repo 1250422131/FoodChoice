@@ -63,7 +63,7 @@ fun CookInfoScreen(
                         title = {
                             Text(
                                 fontWeight = FontWeight.W900,
-                                text = "烹饪指南",
+                                text = "详细信息",
                             )
                         },
                         navigationIcon = {

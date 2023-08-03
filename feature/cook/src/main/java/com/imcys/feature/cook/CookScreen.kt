@@ -52,6 +52,7 @@ import coil.request.ImageRequest
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
 import com.imcys.feature.cook.menu.CookSearchType
+import com.imcys.feature.cook.navigation.navigateToCookInfoRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(
@@ -134,11 +135,13 @@ fun CookScreen(
     ) {
         PageContentColumn(Modifier.padding(it)) {
             Column(
-                Modifier.fillMaxSize().padding(16.dp, 0.dp, 16.dp, 0.dp),
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
-                CookingIngredientScreen(viewModel, viewStates, scrollBehavior)
+                ) {
+                CookingIngredientScreen(viewModel, viewStates, scrollBehavior, navController)
             }
         }
     }
@@ -154,10 +157,12 @@ fun CookingIngredientScreen(
     viewModel: CookViewModel,
     viewStates: CookState,
     pinnedScrollBehavior: TopAppBarScrollBehavior,
+    navController: NavHostController,
 ) {
     LazyColumn(
         Modifier
-            .fillMaxSize().nestedScroll(pinnedScrollBehavior.nestedScrollConnection),
+            .fillMaxSize()
+            .nestedScroll(pinnedScrollBehavior.nestedScrollConnection),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -231,7 +236,7 @@ fun CookingIngredientScreen(
                     selected = false,
                     label = { Text(it.name) },
                     onClick = {
-                        viewModel.sendIntent(CookIntent.ToBiliBili(it.bv))
+                        navController.navigateToCookInfoRoute(it.bv)
                     },
                     leadingIcon = {
                         Text(text = it.emoji)

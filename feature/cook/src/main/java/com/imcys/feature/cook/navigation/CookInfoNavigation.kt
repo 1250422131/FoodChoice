@@ -6,9 +6,9 @@ const val cookInfoRoute = "feature/cook/cookInfo/{bvId}"
 
 fun NavController.navigateToCookInfoRoute(bvId: String) {
     this.navigate(
-        route = "$cookInfoRoute/$bvId",
+        route = "feature/cook/cookInfo/$bvId",
         builder = {
-            popUpTo(cookInfoRoute) { inclusive = true }
+            popUpTo("feature/cook/cookInfo/$bvId") { inclusive = true }
         },
     )
 }
