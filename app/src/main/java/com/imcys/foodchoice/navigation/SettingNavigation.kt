@@ -8,7 +8,9 @@ fun NavController.navigateToSetting() {
     this.navigate(
         route = settingRoute,
         builder = {
-            popUpTo(settingRoute) { inclusive = true }
+            restoreState = true
+            saveState()
+            popBackStack()
         },
     )
 }

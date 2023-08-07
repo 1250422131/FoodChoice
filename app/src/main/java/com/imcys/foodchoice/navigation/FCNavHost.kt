@@ -1,5 +1,7 @@
 package com.imcys.foodchoice.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -20,6 +22,7 @@ import com.imcys.foodchoice.ui.setting.SettingRoute
  * @param modifier Modifier
  * @param startDestination String
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FCNavHost(
     navController: NavHostController,

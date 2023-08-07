@@ -1,6 +1,7 @@
 package com.imcys.feature.cook.ui.info
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -105,21 +106,6 @@ private fun CookInfoContent(
     viewStates: CookInfoState,
 ) {
     LazyColumn(Modifier.fillMaxWidth()) {
-        item {
-            if (viewStates.foodVideoInfo == null) {
-                AndroidView(
-                    factory = {
-                        val lottieAnimationView = LottieAnimationView(it)
-                        lottieAnimationView
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) { view ->
-                    view.setAnimationFromUrl("https://lottie.host/ab850fa7-9eec-4b24-b90c-e72578b9b1d2/L09HY3tGWB.json")
-                    view.loop(true)
-                    view.playAnimation()
-                }
-            }
-        }
 
         viewStates.foodVideoInfo?.data?.apply {
             item {
@@ -130,6 +116,9 @@ private fun CookInfoContent(
                     avatarUrl = owner.face,
                     duration = duration,
                     view = stat.view,
+                    modifier = Modifier.clickable {
+                        viewModel.sendIntent(CookInfoIntent.ToBiliBiliPlay(bvid))
+                    }
                 )
             }
         }

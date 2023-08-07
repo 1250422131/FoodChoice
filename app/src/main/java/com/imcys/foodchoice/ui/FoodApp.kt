@@ -1,5 +1,6 @@
 package com.imcys.foodchoice.ui
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -23,15 +24,23 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.imcys.core.common.utils.VibrationUtils
 import com.imcys.foodchoice.MainActivityIntent
 import com.imcys.foodchoice.MainActivityViewModel
 import com.imcys.foodchoice.navigation.FCNavHost
@@ -40,7 +49,7 @@ import com.imcys.foodchoice.navigation.navigateToHome
 import com.imcys.foodchoice.navigation.navigateToSetting
 import com.imcys.foodchoice.navigation.settingRoute
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FoodApp(
     mainActivityViewModel: MainActivityViewModel,
@@ -60,14 +69,17 @@ fun FoodApp(
             else -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
         }
     }
-
+    val context = LocalContext.current
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     FullScreenScaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Column {
                 AnimatedVisibility(
                     viewStates.isShowBottomBar,
                 ) {
                     CenterAlignedTopAppBar(
+                        scrollBehavior = scrollBehavior,
                         title = {
                             AnimatedVisibility(
                                 visible = viewStates.titleState,
@@ -81,7 +93,9 @@ fun FoodApp(
                             }
                         },
                         actions = {
-                            IconButton(onClick = { }) {
+                            IconButton(onClick = {
+                               VibrationUtils.performHapticFeedback(context)
+                            }) {
                                 Icon(
                                     imageVector = Icons.Outlined.AccountCircle,
                                     contentDescription = null,
@@ -89,7 +103,7 @@ fun FoodApp(
                             }
                         },
 
-                    )
+                        )
                 }
             }
         },
@@ -132,7 +146,10 @@ fun FoodApp(
     ) {
         Spacer(modifier = Modifier.width(5.dp))
         Row(modifier = Modifier.padding(it)) {
-            FCNavHost(navController = navController, modifier = Modifier.weight(1f))
+            FCNavHost(
+                navController = navController,
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }

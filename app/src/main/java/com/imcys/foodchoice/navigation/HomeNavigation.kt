@@ -8,7 +8,9 @@ fun NavController.navigateToHome() {
     this.navigate(
         route = homeRoute,
         builder = {
-            popUpTo(homeRoute) { inclusive = true }
+            restoreState = true
+            saveState()
+            popBackStack()
         },
     )
 }

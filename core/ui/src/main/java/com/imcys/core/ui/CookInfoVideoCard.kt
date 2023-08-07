@@ -46,11 +46,9 @@ fun CookInfoVideoCard(
     duration: Long = 0,
     view: Long = 0,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .clickable { },
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
     ) {
         // 产生上下结构
         Column(Modifier.fillMaxWidth().padding(10.dp)) {
