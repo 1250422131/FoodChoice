@@ -1,16 +1,19 @@
 package com.imcys.core.model.cook
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
+@JsonClass(generateAdapter = true)
 data class CookingIngredient(
-
-    @SerializedName("emoji")
-    val emoji: String,
-    @SerializedName("name")
-    val name: String,
-    val image: String?,
-    val alias: String?,
-    val label: String?,
-
+    @Json(name = "emoji")
+    val emoji: String = "",
+    @Json(name = "image")
+    val image: String? = null,
+    @Json(name = "label")
+    val label: String? = null,
+    @Json(name = "name")
+    val name: String = "",
+    @Json(name = "alias")
+    val alias: String? = null,
 ) : Serializable

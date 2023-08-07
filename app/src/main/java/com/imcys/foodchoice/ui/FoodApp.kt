@@ -1,17 +1,24 @@
 package com.imcys.foodchoice.ui
 
-import android.view.HapticFeedbackConstants
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -30,126 +37,164 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.imcys.core.common.utils.VibrationUtils
 import com.imcys.foodchoice.MainActivityIntent
+import com.imcys.foodchoice.MainActivityState
 import com.imcys.foodchoice.MainActivityViewModel
 import com.imcys.foodchoice.navigation.FCNavHost
-import com.imcys.foodchoice.navigation.homeRoute
-import com.imcys.foodchoice.navigation.navigateToHome
-import com.imcys.foodchoice.navigation.navigateToSetting
-import com.imcys.foodchoice.navigation.settingRoute
+import com.imcys.foodchoice.ui.home.HomeRoute
+import com.imcys.foodchoice.ui.setting.SettingRoute
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+)
 @Composable
 fun FoodApp(
     mainActivityViewModel: MainActivityViewModel,
-    navController: NavHostController,
 ) {
     val viewStates = mainActivityViewModel.viewStates
+    val pageState = rememberPagerState(initialPage = 0)
+    val scope = rememberCoroutineScope()
+    // 全局路由
+    val navController = rememberNavController()
 
     navController.addOnDestinationChangedListener { _, destination, _ ->
         when (destination.route) {
-            homeRoute -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
-            settingRoute -> mainActivityViewModel.sendIntent(
-                MainActivityIntent.SetShowBottomBar(
-                    true,
-                ),
-            )
-
+            "app_index" -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
             else -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
         }
     }
+
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     FullScreenScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            Column {
-                AnimatedVisibility(
-                    viewStates.isShowBottomBar,
-                ) {
-                    CenterAlignedTopAppBar(
-                        scrollBehavior = scrollBehavior,
-                        title = {
-                            AnimatedVisibility(
-                                visible = viewStates.titleState,
-                                enter = slideInVertically(initialOffsetY = { -it }),
-                                exit = slideOutVertically(targetOffsetY = { -it }),
-                            ) {
-                                Text(
-                                    overflow = TextOverflow.Ellipsis,
-                                    text = viewStates.run { navItems[navItemIndex].label },
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = {
-                               VibrationUtils.performHapticFeedback(context)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.AccountCircle,
-                                    contentDescription = null,
-                                )
-                            }
-                        },
-
-                        )
-                }
-            }
+            appTopBar(viewStates, scrollBehavior, context)
         },
         bottomBar = {
-            Column {
-                AnimatedVisibility(
-                    viewStates.isShowBottomBar,
-                ) {
-                    NavigationBar {
-                        viewStates.navItems.forEachIndexed { index, navItem ->
-                            NavigationBarItem(
-                                selected = viewStates.navItemIndex == index,
-                                onClick = {
-                                    mainActivityViewModel.sendIntent(
-                                        MainActivityIntent.SelectNavItem(
-                                            index,
-                                        ),
-                                    )
-                                    when (index) {
-                                        0 -> navController.navigateToHome()
-                                        1 -> navController.navigateToSetting()
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector =
-                                        if (viewStates.navItemIndex == index) navItem.checked else navItem.unchecked,
-                                        contentDescription = null,
-                                    )
-                                },
-                                label = {
-                                    Text(text = navItem.label)
-                                },
-                            )
-                        }
-                    }
-                }
-            }
+            appBottomBar(viewStates, mainActivityViewModel, scope, pageState)
         },
     ) {
         Spacer(modifier = Modifier.width(5.dp))
         Row(modifier = Modifier.padding(it)) {
-            FCNavHost(
-                navController = navController,
-                modifier = Modifier.weight(1f),
+            Box(modifier = Modifier.weight(1f)) {
+                FCNavHost(
+                    navController = navController,
+                    modifier = if (viewStates.isShowBottomBar) Modifier.height(0.dp) else Modifier.fillMaxSize(),
+                )
+
+                HorizontalPager(
+                    userScrollEnabled = false,
+                    state = pageState,
+                    modifier = if (!viewStates.isShowBottomBar) Modifier.height(0.dp) else Modifier.fillMaxSize(),
+                    pageCount = 2,
+                ) { pager ->
+                    when (pager) {
+                        0 -> {
+                            HomeRoute(navController = navController)
+                        }
+
+                        1 -> {
+                            SettingRoute(navController = navController)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun appTopBar(
+    viewStates: MainActivityState,
+    scrollBehavior: TopAppBarScrollBehavior,
+    context: Context,
+) {
+    Column {
+        AnimatedVisibility(
+            viewStates.isShowBottomBar,
+        ) {
+            CenterAlignedTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = {
+                    AnimatedVisibility(
+                        visible = viewStates.titleState,
+                        enter = slideInVertically(initialOffsetY = { -it }),
+                        exit = slideOutVertically(targetOffsetY = { -it }),
+                    ) {
+                        Text(
+                            overflow = TextOverflow.Ellipsis,
+                            text = viewStates.run { navItems[navItemIndex].label },
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        VibrationUtils.performHapticFeedback(context)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.AccountCircle,
+                            contentDescription = null,
+                        )
+                    }
+                },
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun appBottomBar(
+    viewStates: MainActivityState,
+    mainActivityViewModel: MainActivityViewModel,
+    scope: CoroutineScope,
+    pageState: PagerState,
+) {
+    Column {
+        AnimatedVisibility(
+            viewStates.isShowBottomBar,
+        ) {
+            NavigationBar {
+                viewStates.navItems.forEachIndexed { index, navItem ->
+                    NavigationBarItem(
+                        selected = viewStates.navItemIndex == index,
+                        onClick = {
+                            mainActivityViewModel.sendIntent(
+                                MainActivityIntent.SelectNavItem(
+                                    index,
+                                ),
+                            )
+                            scope.launch { pageState.scrollToPage(index) }
+                        },
+                        icon = {
+                            Icon(
+                                imageVector =
+                                if (viewStates.navItemIndex == index) navItem.checked else navItem.unchecked,
+                                contentDescription = null,
+                            )
+                        },
+                        label = {
+                            Text(text = navItem.label)
+                        },
+                    )
+                }
+            }
         }
     }
 }

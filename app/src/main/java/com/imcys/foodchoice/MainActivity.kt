@@ -1,7 +1,6 @@
 package com.imcys.foodchoice
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
@@ -11,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.imcys.core.common.viewmodel.ui.BaseComponentActivity
 import com.imcys.core.designsystem.theme.FoodChoiceTheme
 import com.imcys.foodchoice.ui.FoodApp
@@ -28,14 +26,12 @@ class MainActivity : BaseComponentActivity() {
 
         setContent {
             FoodChoiceTheme {
-                // 全局路由
-                val navController = rememberNavController()
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
 
                 ) {
-                    FoodApp(viewModel, navController)
+                    FoodApp(viewModel)
                 }
             }
         }

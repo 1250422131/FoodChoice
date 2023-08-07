@@ -36,6 +36,7 @@ android {
 dependencies {
 
     implementation(project(":core:common"))
+    implementation(libs.com.squareup.retrofit2.converter.moshi)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("androidx.core:core-ktx:1.8.0")

@@ -1,5 +1,6 @@
 [versions]
 androidxComposeBom = "2023.05.01"
+retrofit2 = "2.9.0"
 
 [libraries]
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
@@ -9,4 +10,5 @@ androidx-compose-ui-ui-tooling-preview = { group = "androidx.compose.ui", name =
 androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 com-airbnb-android-lottie = { group = "com.airbnb.android", name = "lottie", version = "6.1.0" }
-
+com-squareup-retrofit2-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+com-squareup-retrofit2-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }

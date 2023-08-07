@@ -13,7 +13,8 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:model"))
 
-    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api(libs.com.squareup.retrofit2.retrofit)
+    api(libs.com.squareup.retrofit2.converter.moshi)
     api("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("androidx.core:core-ktx:1.8.0")

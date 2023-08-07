@@ -15,5 +15,4 @@ data class CookInfoState(
 sealed class CookInfoIntent : UiIntent {
     data class LoadFoodVideoInfo(val bvId: String) : CookInfoIntent()
     data class ToBiliBiliPlay(val bvId: String) : CookInfoIntent()
-
 }

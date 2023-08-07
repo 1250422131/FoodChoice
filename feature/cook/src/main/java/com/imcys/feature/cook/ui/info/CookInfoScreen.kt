@@ -25,11 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.LottieAnimationView
 import com.imcys.core.ui.CookInfoVideoCard
 import com.imcys.core.ui.PageContentColumn
 
@@ -106,7 +104,6 @@ private fun CookInfoContent(
     viewStates: CookInfoState,
 ) {
     LazyColumn(Modifier.fillMaxWidth()) {
-
         viewStates.foodVideoInfo?.data?.apply {
             item {
                 CookInfoVideoCard(
@@ -118,7 +115,7 @@ private fun CookInfoContent(
                     view = stat.view,
                     modifier = Modifier.clickable {
                         viewModel.sendIntent(CookInfoIntent.ToBiliBiliPlay(bvid))
-                    }
+                    },
                 )
             }
         }

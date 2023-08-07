@@ -1,6 +1,5 @@
 package com.imcys.foodchoice.ui.setting
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,7 +26,4 @@ fun SettingScreen(
     viewState: SettingState,
     navController: NavHostController,
 ) {
-    Box {
-
-    }
 }

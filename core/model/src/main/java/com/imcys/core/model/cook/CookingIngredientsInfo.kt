@@ -1,6 +1,7 @@
 package com.imcys.core.model.cook
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
@@ -10,22 +11,24 @@ import java.io.Serializable
  * @property msg String
  * @constructor
  */
+@JsonClass(generateAdapter = true)
 data class CookingIngredientsInfo(
-    @SerializedName("code")
-    val code: Int, // 0
-    @SerializedName("data")
-    val `data`: Data,
-    @SerializedName("msg")
-    val msg: String, // 获取成功
+    @Json(name = "code")
+    val code: Int = 0,
+    @Json(name = "data")
+    val `data`: Data = Data(),
+    @Json(name = "msg")
+    val msg: String = "",
 ) : Serializable {
+    @JsonClass(generateAdapter = true)
     data class Data(
-        @SerializedName("meat")
-        val meat: List<CookingIngredient>,
-        @SerializedName("staple")
-        val staple: List<CookingIngredient>,
-        @SerializedName("tools")
-        val tools: List<CookingIngredient>,
-        @SerializedName("vegetable")
-        val vegetable: List<CookingIngredient>,
-    ) : Serializable
+        @Json(name = "meat")
+        val meat: List<CookingIngredient> = listOf(),
+        @Json(name = "staple")
+        val staple: List<CookingIngredient> = listOf(),
+        @Json(name = "tools")
+        val tools: List<CookingIngredient> = listOf(),
+        @Json(name = "vegetable")
+        val vegetable: List<CookingIngredient> = listOf(),
+    ): Serializable
 }

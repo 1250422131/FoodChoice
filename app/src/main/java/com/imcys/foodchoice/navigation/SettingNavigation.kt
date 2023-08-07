@@ -5,12 +5,12 @@ import androidx.navigation.NavController
 const val settingRoute = "app_setting"
 
 fun NavController.navigateToSetting() {
+    this.popBackStack()
     this.navigate(
         route = settingRoute,
         builder = {
-            restoreState = true
             saveState()
-            popBackStack()
+            restoreState = true
         },
     )
 }
