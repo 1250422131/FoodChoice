@@ -102,29 +102,31 @@ fun CookScreen(
     viewStates: CookState,
     navController: NavHostController,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            Column {
-                LargeTopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            fontWeight = FontWeight.W900,
-                            text = "烹饪指南",
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+            LargeTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        fontWeight = FontWeight.W900,
+                        text = "烹饪指南",
+                    )
+                },
+                navigationIcon = {
+                    Column {
+                        IconButton(onClick = {
+                            navController.navigateUp()
+                        }) {
                             Icon(
                                 imageVector = Icons.Outlined.ArrowBack,
                                 contentDescription = null,
                             )
                         }
-                    },
-                )
-            }
+                    }
+                },
+            )
         },
     ) {
         PageContentColumn(Modifier.padding(top = it.calculateTopPadding())) {
@@ -157,7 +159,6 @@ fun CookingIngredientScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            Spacer(modifier = Modifier.height(10.dp))
             // 留白，这里后面是重置功能
             Text(
                 text = "\uD83E\uDD58 挑选你的食材",

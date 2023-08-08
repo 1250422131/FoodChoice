@@ -74,7 +74,9 @@ private fun CookInfoScreen(
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
+                            IconButton(onClick = {
+                                navController.navigateUp()
+                            }) {
                                 Icon(
                                     imageVector = Icons.Outlined.ArrowBack,
                                     contentDescription = null,

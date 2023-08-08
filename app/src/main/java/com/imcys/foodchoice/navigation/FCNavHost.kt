@@ -24,8 +24,8 @@ import com.imcys.foodchoice.ui.setting.SettingRoute
 @Composable
 fun FCNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
     startDestination: String = "app_index",
+    modifier: Modifier,
 ) {
     NavHost(
         navController = navController,
@@ -37,10 +37,10 @@ fun FCNavHost(
             }
         }
         composable(homeRoute) {
-            HomeRoute(modifier = modifier, navController = navController)
+            HomeRoute(modifier = Modifier, navController = navController)
         }
         composable(cookRoute) {
-            CookRoute(modifier = modifier, navController = navController)
+            CookRoute(modifier = Modifier, navController = navController)
         }
         composable(
             cookInfoRoute,
@@ -50,12 +50,12 @@ fun FCNavHost(
         ) {
             CookInfoRoute(
                 it.arguments?.getString("bvId") ?: "",
-                modifier = modifier,
+                modifier = Modifier,
                 navController = navController,
             )
         }
         composable(settingRoute) {
-            SettingRoute(modifier = modifier, navController = navController)
+            SettingRoute(modifier = Modifier, navController = navController)
         }
     }
 }

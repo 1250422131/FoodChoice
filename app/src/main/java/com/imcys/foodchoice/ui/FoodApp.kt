@@ -6,15 +6,13 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -89,28 +87,27 @@ fun FoodApp(
             appBottomBar(viewStates, mainActivityViewModel, scope, pageState)
         },
     ) {
-        Spacer(modifier = Modifier.width(5.dp))
-        Row(modifier = Modifier.padding(it)) {
-            Box(modifier = Modifier.weight(1f)) {
-                FCNavHost(
-                    navController = navController,
-                    modifier = if (viewStates.isShowBottomBar) Modifier.height(0.dp) else Modifier.fillMaxSize(),
-                )
+        Column(modifier = Modifier.padding(it)) {
+            Spacer(modifier = Modifier.width(10.dp))
 
-                HorizontalPager(
-                    userScrollEnabled = false,
-                    state = pageState,
-                    modifier = if (!viewStates.isShowBottomBar) Modifier.height(0.dp) else Modifier.fillMaxSize(),
-                    pageCount = 2,
-                ) { pager ->
-                    when (pager) {
-                        0 -> {
-                            HomeRoute(navController = navController)
-                        }
+            FCNavHost(
+                navController = navController,
+                modifier = if (viewStates.isShowBottomBar) Modifier.size(0.dp) else Modifier.fillMaxSize(),
+            )
 
-                        1 -> {
-                            SettingRoute(navController = navController)
-                        }
+            HorizontalPager(
+                userScrollEnabled = false,
+                state = pageState,
+                modifier = if (!viewStates.isShowBottomBar) Modifier.size(0.dp) else Modifier.fillMaxSize(),
+                pageCount = 2,
+            ) { pager ->
+                when (pager) {
+                    0 -> {
+                        HomeRoute(navController = navController)
+                    }
+
+                    1 -> {
+                        SettingRoute(navController = navController)
                     }
                 }
             }

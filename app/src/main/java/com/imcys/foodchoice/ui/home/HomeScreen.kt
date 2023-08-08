@@ -2,7 +2,9 @@ package com.imcys.foodchoice.ui.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,6 +40,9 @@ fun HomeScreen(
         modifier = modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        item {
+            Spacer(modifier = Modifier.height(10.dp))
+        }
         items(viewState.homeItems) {
             HomeFunctionCard(
                 it.title,
