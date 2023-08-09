@@ -34,7 +34,9 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -43,6 +45,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.imcys.core.common.utils.VibrationUtils
@@ -55,8 +58,11 @@ import com.imcys.foodchoice.ui.setting.SettingRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+private val LocalViewModel = compositionLocalOf<MainActivityViewModel> { error("No init!") }
+private val LocalViewState = compositionLocalOf<MainActivityState> { error("No init!") }
+private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
+
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
 )
 @Composable
@@ -64,15 +70,33 @@ fun FoodApp(
     mainActivityViewModel: MainActivityViewModel,
 ) {
     val viewStates = mainActivityViewModel.viewStates
-    val pageState = rememberPagerState(initialPage = 0)
-    val scope = rememberCoroutineScope()
+
     // 全局路由
     val navController = rememberNavController()
 
+    CompositionLocalProvider(
+        LocalViewModel provides mainActivityViewModel,
+        LocalViewState provides viewStates,
+        LocalNavController provides navController,
+    ) {
+        FoodAppScreen()
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+private fun FoodAppScreen() {
+    val scope = rememberCoroutineScope()
+    val pageState = rememberPagerState(initialPage = 0)
+
+    val navController = LocalNavController.current
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
+
     navController.addOnDestinationChangedListener { _, destination, _ ->
         when (destination.route) {
-            "app_index" -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
-            else -> mainActivityViewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
+            "app_index" -> viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
+            else -> viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
         }
     }
 
@@ -84,7 +108,7 @@ fun FoodApp(
             appTopBar(viewStates, scrollBehavior, context)
         },
         bottomBar = {
-            appBottomBar(viewStates, mainActivityViewModel, scope, pageState)
+            appBottomBar(viewStates, viewModel, scope, pageState)
         },
     ) {
         Column(modifier = Modifier.padding(it)) {
@@ -196,7 +220,6 @@ private fun appBottomBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullScreenScaffold(
     modifier: Modifier = Modifier,

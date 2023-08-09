@@ -28,6 +28,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -51,6 +54,10 @@ import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
 import com.imcys.feature.cook.menu.CookSearchType
 import com.imcys.feature.cook.navigation.navigateToCookInfoRoute
+
+private val LocalViewModel = compositionLocalOf<CookViewModel> { error("No init!") }
+private val LocalViewState = compositionLocalOf<CookState> { error("No init!") }
+private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(
@@ -86,22 +93,24 @@ fun CookRoute(
     viewModel: CookViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
-    CookScreen(
-        modifier = modifier,
-        viewModel = viewModel,
-        viewStates = viewModel.viewStates,
-        navController = navController,
-    )
+    CompositionLocalProvider(
+        LocalViewModel provides viewModel,
+        LocalViewState provides viewModel.viewStates,
+        LocalNavController provides navController,
+    ) {
+        CookScreen(modifier = modifier)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CookScreen(
     modifier: Modifier,
-    viewModel: CookViewModel,
-    viewStates: CookState,
-    navController: NavHostController,
 ) {
+    val navController = LocalNavController.current
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -137,7 +146,7 @@ fun CookScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-                CookingIngredientScreen(viewModel, viewStates, navController)
+                CookingIngredientScreen()
             }
         }
     }
@@ -149,11 +158,11 @@ fun CookScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CookingIngredientScreen(
-    viewModel: CookViewModel,
-    viewStates: CookState,
-    navController: NavHostController,
-) {
+fun CookingIngredientScreen() {
+    val navController = LocalNavController.current
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
+
     LazyColumn(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

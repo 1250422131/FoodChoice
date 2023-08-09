@@ -10,7 +10,6 @@ import com.imcys.core.data.repository.cook.CookFoodInfoRepository
 import com.imcys.core.network.retrofit.RetrofitAppNetwork.bilibiliApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +19,7 @@ class CookInfoViewModel @Inject constructor(
     private val cookFoodInfoRepository: CookFoodInfoRepository,
     @ApplicationContext private val context: Context,
 
-    ) : ComposeBaseViewModel<CookInfoState, CookInfoIntent>(CookInfoState()) {
+) : ComposeBaseViewModel<CookInfoState, CookInfoIntent>(CookInfoState()) {
     override fun handleEvent(event: CookInfoIntent, state: CookInfoState) {
         when (event) {
             is CookInfoIntent.LoadFoodVideoInfo -> {
@@ -40,7 +39,7 @@ class CookInfoViewModel @Inject constructor(
     private fun toBiliBiliPlay(bvId: String) {
         val packName = "tv.danmaku.bili"
         context.packageManager.getLaunchIntentForPackage(packName)?.apply {
-            //组装跳转
+            // 组装跳转
             val url = "bilibili://video/$bvId"
             Intent(Intent.ACTION_VIEW, Uri.parse(url)).also {
                 it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -51,8 +50,6 @@ class CookInfoViewModel @Inject constructor(
         } ?: apply {
             Toast.makeText(context, "失败", Toast.LENGTH_SHORT).show()
         }
-
-
     }
 
     private suspend fun loadFoodVideoInfo(bvId: String) {

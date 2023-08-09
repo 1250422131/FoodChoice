@@ -19,7 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -31,6 +33,10 @@ import androidx.navigation.compose.rememberNavController
 import com.imcys.core.ui.CookInfoVideoCard
 import com.imcys.core.ui.PageContentColumn
 
+private val LocalViewModel = compositionLocalOf<CookInfoViewModel> { error("No init!") }
+private val LocalViewState = compositionLocalOf<CookInfoState> { error("No init!") }
+private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
+
 @Composable
 fun CookInfoRoute(
     bvId: String,
@@ -41,22 +47,23 @@ fun CookInfoRoute(
     LaunchedEffect(Unit) {
         viewModel.sendIntent(CookInfoIntent.LoadFoodVideoInfo(bvId = bvId))
     }
-    CookInfoScreen(
-        modifier = modifier,
-        viewModel = viewModel,
-        viewStates = viewModel.viewStates,
-        navController = navController,
-    )
+    CompositionLocalProvider(
+        LocalViewModel provides viewModel,
+        LocalViewState provides viewModel.viewStates,
+        LocalNavController provides navController,
+    ) {
+        CookInfoScreen(modifier = modifier)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CookInfoScreen(
     modifier: Modifier,
-    viewModel: CookInfoViewModel,
-    viewStates: CookInfoState,
-    navController: NavHostController,
 ) {
+    val navController = LocalNavController.current
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
