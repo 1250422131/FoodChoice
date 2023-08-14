@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.imcys.foodchoice"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.imcys.foodchoice"

@@ -1,6 +1,7 @@
 package com.imcys.foodchoice.navigation
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -13,6 +14,7 @@ import com.imcys.feature.cook.navigation.cookInfoRoute
 import com.imcys.feature.cook.navigation.cookRoute
 import com.imcys.feature.cook.ui.info.CookInfoRoute
 import com.imcys.foodchoice.ui.home.HomeRoute
+import com.imcys.foodchoice.ui.index.IndexRoute
 import com.imcys.foodchoice.ui.setting.SettingRoute
 
 /**
@@ -21,11 +23,13 @@ import com.imcys.foodchoice.ui.setting.SettingRoute
  * @param modifier Modifier
  * @param startDestination String
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FCNavHost(
     navController: NavHostController,
     startDestination: String = "app_index",
     modifier: Modifier,
+    pageState: PagerState,
 ) {
     NavHost(
         navController = navController,
@@ -33,8 +37,7 @@ fun FCNavHost(
         modifier = modifier,
     ) {
         composable("app_index") {
-            Box {
-            }
+            IndexRoute(modifier = Modifier, navController = navController, pageState = pageState)
         }
         composable(homeRoute) {
             HomeRoute(modifier = Modifier, navController = navController)

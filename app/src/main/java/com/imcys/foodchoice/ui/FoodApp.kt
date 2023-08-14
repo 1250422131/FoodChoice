@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -37,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,8 +50,6 @@ import com.imcys.foodchoice.MainActivityIntent
 import com.imcys.foodchoice.MainActivityState
 import com.imcys.foodchoice.MainActivityViewModel
 import com.imcys.foodchoice.navigation.FCNavHost
-import com.imcys.foodchoice.ui.home.HomeRoute
-import com.imcys.foodchoice.ui.setting.SettingRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -62,9 +57,6 @@ private val LocalViewModel = compositionLocalOf<MainActivityViewModel> { error("
 private val LocalViewState = compositionLocalOf<MainActivityState> { error("No init!") }
 private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
 
-@OptIn(
-    ExperimentalFoundationApi::class,
-)
 @Composable
 fun FoodApp(
     mainActivityViewModel: MainActivityViewModel,
@@ -87,7 +79,10 @@ fun FoodApp(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun FoodAppScreen() {
     val scope = rememberCoroutineScope()
-    val pageState = rememberPagerState(initialPage = 0)
+    val pageState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f,
+    ) { 2 }
 
     val navController = LocalNavController.current
     val viewModel = LocalViewModel.current
@@ -95,7 +90,9 @@ private fun FoodAppScreen() {
 
     navController.addOnDestinationChangedListener { _, destination, _ ->
         when (destination.route) {
-            "app_index" -> viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
+            "app_index" -> {
+                viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
+            }
             else -> viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
         }
     }
@@ -116,25 +113,9 @@ private fun FoodAppScreen() {
 
             FCNavHost(
                 navController = navController,
-                modifier = if (viewStates.isShowBottomBar) Modifier.size(0.dp) else Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
+                pageState = pageState,
             )
-
-            HorizontalPager(
-                userScrollEnabled = false,
-                state = pageState,
-                modifier = if (!viewStates.isShowBottomBar) Modifier.size(0.dp) else Modifier.fillMaxSize(),
-                pageCount = 2,
-            ) { pager ->
-                when (pager) {
-                    0 -> {
-                        HomeRoute(navController = navController)
-                    }
-
-                    1 -> {
-                        SettingRoute(navController = navController)
-                    }
-                }
-            }
         }
     }
 }

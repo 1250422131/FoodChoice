@@ -54,5 +54,4 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
             intentChannel.send(viewIntent)
         }
     }
-
 }

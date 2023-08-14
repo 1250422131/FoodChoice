@@ -101,17 +101,17 @@ private fun CookInfoScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
-                CookInfoContent(viewModel, viewStates)
+                CookInfoContent()
             }
         }
     }
 }
 
 @Composable
-private fun CookInfoContent(
-    viewModel: CookInfoViewModel,
-    viewStates: CookInfoState,
-) {
+private fun CookInfoContent() {
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
+
     LazyColumn(Modifier.fillMaxWidth()) {
         viewStates.foodVideoInfo?.data?.apply {
             item {
