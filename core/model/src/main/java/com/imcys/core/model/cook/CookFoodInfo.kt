@@ -1,10 +1,8 @@
 package com.imcys.core.model.cook
 
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
 data class CookFoodInfo(
     @Json(name = "code")
     val code: Int = 0,
@@ -13,7 +11,6 @@ data class CookFoodInfo(
     @Json(name = "msg")
     val msg: String = "",
 ) : Serializable {
-    @JsonClass(generateAdapter = true)
     data class Data(
         @Json(name = "bv")
         val bv: String = "",

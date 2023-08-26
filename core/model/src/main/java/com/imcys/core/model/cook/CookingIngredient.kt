@@ -2,9 +2,7 @@ package com.imcys.core.model.cook
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
-@JsonClass(generateAdapter = true)
 data class CookingIngredient(
     @Json(name = "emoji")
     val emoji: String = "",
@@ -16,4 +14,4 @@ data class CookingIngredient(
     val name: String = "",
     @Json(name = "alias")
     val alias: String? = null,
-) : Serializable
+)

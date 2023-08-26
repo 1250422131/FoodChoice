@@ -2,10 +2,12 @@ package com.imcys.core.data.repository.cook
 
 import com.imcys.core.common.data.BaseRepository
 import com.imcys.core.data.extend.asCookingIngredientEntity
+import com.imcys.core.data.extend.makeRequestInFlow
 import com.imcys.core.database.dao.CookingIngredientDao
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.model.cook.CookingIngredient
 import com.imcys.core.network.retrofit.RetrofitAppNetwork
+import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
 class CookingIngredientRepository @Inject constructor(
@@ -20,39 +22,26 @@ class CookingIngredientRepository @Inject constructor(
     suspend fun getCookingIngredient(name: String) = run { cookingIngredientDao.selectByName(name) }
 
     override suspend fun syncWithData(): Boolean {
-        val cookingIngredientResult = runCatching {
-            RetrofitAppNetwork.networkApi.getCookingIngredients()
-        }
+        var isSuccess = true // 默认为 true，表示成功
 
-        // 成功的前提下进行
-        if (cookingIngredientResult.isSuccess) {
-            val cookingIngredientInfo = cookingIngredientResult.getOrNull()
-
-            cookingIngredientInfo?.data?.meat?.let { updateCheck(it, CookingIngredientEntity.MEAT) }
-
-            cookingIngredientInfo?.data?.staple?.let {
+        makeRequestInFlow {
+            emit(RetrofitAppNetwork.networkApi.getCookingIngredients())
+        }.catch {
+            // 出现异常
+            isSuccess = true
+        }.collect {
+            it.data.meat.let { meat -> updateCheck(meat, CookingIngredientEntity.MEAT) }
+            it.data.staple.let { staple -> updateCheck(staple, CookingIngredientEntity.STAPLE) }
+            it.data.vegetable.let { vegetable ->
                 updateCheck(
-                    it,
-                    CookingIngredientEntity.STAPLE,
-                )
-            }
-
-            // STAPLE_FOOD
-            cookingIngredientInfo?.data?.vegetable?.let {
-                updateCheck(
-                    it,
+                    vegetable,
                     CookingIngredientEntity.VEGETABLE,
                 )
             }
-            cookingIngredientInfo?.data?.tools?.let {
-                updateCheck(
-                    it,
-                    CookingIngredientEntity.TOOL,
-                )
-            }
+            it.data.tools.let { tools -> updateCheck(tools, CookingIngredientEntity.TOOL) }
         }
 
-        return cookingIngredientResult.isSuccess
+        return isSuccess
     }
 
     private suspend fun updateCheck(cookingIngredientList: List<CookingIngredient>, type: Int) {
