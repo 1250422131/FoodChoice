@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import com.imcys.core.data.repository.cook.CookFoodInfoRepository
 import com.imcys.core.network.retrofit.RetrofitAppNetwork.bilibiliApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,11 +21,11 @@ class CookInfoViewModel @Inject constructor(
     override fun handleEvent(event: CookInfoIntent, state: CookInfoState) {
         when (event) {
             is CookInfoIntent.LoadFoodVideoInfo -> {
-                viewModelScope.launch { loadFoodVideoInfo(event.bvId) }
+                launchUI { loadFoodVideoInfo(event.bvId) }
             }
 
             is CookInfoIntent.ToBiliBiliPlay -> {
-                viewModelScope.launch { toBiliBiliPlay(event.bvId) }
+                toBiliBiliPlay(event.bvId)
             }
         }
     }
@@ -63,7 +61,7 @@ class CookInfoViewModel @Inject constructor(
 
     init {
         // appbar动画
-        viewModelScope.launch {
+        launchUI {
             delay(200L)
             viewStates.update { copy(isShowBottomBar = true) }
         }

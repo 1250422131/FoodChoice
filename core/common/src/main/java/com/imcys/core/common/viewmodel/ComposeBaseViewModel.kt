@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.info.IViewModelHandle
 import com.imcys.core.common.viewmodel.info.UiIntent
 import com.imcys.core.common.viewmodel.info.UiState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -43,7 +45,7 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
      * 更新意图
      */
     fun S.update(content: S.() -> S) {
-        viewStates = content.invoke(this)
+        launchUI { viewStates = content.invoke(this@update) }
     }
 
     /**
@@ -54,4 +56,19 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
             intentChannel.send(viewIntent)
         }
     }
+
+    fun launchIO(
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> Unit,
+    ) {
+        viewModelScope.launch(Dispatchers.IO, start, block)
+    }
+
+    fun launchUI(
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> Unit,
+    ) {
+        viewModelScope.launch(Dispatchers.Main, start, block)
+    }
+
 }

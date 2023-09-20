@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,7 +60,7 @@ private val LocalViewModel = compositionLocalOf<CookViewModel> { error("No init!
 private val LocalViewState = compositionLocalOf<CookState> { error("No init!") }
 private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api ::class)
 @Preview(
     name = "ElevatedFilterChip",
 )
@@ -67,7 +68,7 @@ private val LocalNavController = compositionLocalOf<NavHostController> { error("
 fun CookElevatedFilterChipPreview() {
     ElevatedFilterChip(
         selected = false,
-        label = { Text("菜品") },
+        label = { Text("菜品")        },
         onClick = {
         },
         leadingIcon = {
@@ -108,8 +109,6 @@ fun CookScreen(
     modifier: Modifier,
 ) {
     val navController = LocalNavController.current
-    val viewModel = LocalViewModel.current
-    val viewStates = LocalViewState.current
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
@@ -145,7 +144,7 @@ fun CookScreen(
                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+                ) {
                 CookingIngredientScreen()
             }
         }
@@ -180,25 +179,18 @@ fun CookingIngredientScreen() {
             // 查询过滤条件块
             StuffFlow(
                 "\uD83E\uDD6C 菜菜们",
-                viewModel,
-                viewStates,
                 CookingIngredientEntity.VEGETABLE,
             )
 
-            StuffFlow("\uD83E\uDD69 肉肉们", viewModel, viewStates, CookingIngredientEntity.MEAT)
+            StuffFlow("\uD83E\uDD69 肉肉们", CookingIngredientEntity.MEAT)
 
             StuffFlow(
                 "\uD83C\uDF5A 主食也要一起下锅吗？",
-                viewModel,
-                viewStates,
                 CookingIngredientEntity.STAPLE,
             )
 
             TollFlow(
-                "\uD83C\uDF73 再选一下厨具",
-                viewModel,
-                viewStates,
-                CookingIngredientEntity.TOOL,
+                "\uD83C\uDF73 再选一下厨具", CookingIngredientEntity.TOOL
             )
         }
 
@@ -212,10 +204,7 @@ fun CookingIngredientScreen() {
                 fontWeight = FontWeight.Bold,
             )
 
-            SearchTypeScreen(
-                viewModel,
-                viewStates,
-            )
+            SearchTypeScreen()
         }
 
         item {
@@ -264,10 +253,10 @@ fun CookingIngredientScreen() {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 private fun StuffFlow(
     title: String,
-    viewModel: CookViewModel,
-    viewStates: CookState,
     type: Int,
 ) {
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -314,9 +303,9 @@ private fun StuffFlow(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SearchTypeScreen(
-    viewModel: CookViewModel,
-    viewStates: CookState,
 ) {
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
     Row(horizontalArrangement = Arrangement.Center) {
         ElevatedFilterChip(
             modifier = Modifier.padding(5.dp, 10.dp),
@@ -361,10 +350,10 @@ private fun SearchTypeScreen(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 private fun TollFlow(
     title: String,
-    viewModel: CookViewModel,
-    viewStates: CookState,
     type: Int,
 ) {
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -376,7 +365,7 @@ private fun TollFlow(
         )
 
         Spacer(modifier = Modifier.height(10.dp))
-        var mSelectedIndex by remember { mutableStateOf(-1) }
+        var mSelectedIndex by remember { mutableIntStateOf(-1) }
 
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

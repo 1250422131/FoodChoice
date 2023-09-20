@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import com.imcys.core.data.repository.cook.CookFoodInfoRepository
 import com.imcys.core.data.repository.cook.CookingIngredientRepository
@@ -13,7 +12,6 @@ import com.imcys.feature.cook.menu.CookSearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,12 +24,12 @@ class CookViewModel @Inject constructor(
 
     init {
         // appbar动画
-        viewModelScope.launch {
+        launchUI {
             delay(200L)
             viewStates = viewStates.copy(isShowBottomBar = true)
         }
 
-        viewModelScope.launch {
+        launchUI {
             // 初始化数据
             // 加载食材
             initCookInfo()
@@ -42,8 +40,7 @@ class CookViewModel @Inject constructor(
 
     private suspend fun initFoodsInfo() {
         // 无网络数据加载
-        viewStates =
-            viewStates.copy(foodsEntity = cookFoodInfoRepository.getCookingFoods())
+        viewStates = viewStates.copy(foodsEntity = cookFoodInfoRepository.getCookingFoods())
 
         if (cookFoodInfoRepository.syncWithData()) {
             viewStates =
