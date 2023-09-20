@@ -34,7 +34,7 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
     }
 
     private fun handleIntent() {
-        viewModelScope.launch(Dispatchers.IO) {
+        launchIO {
             intentChannel.consumeAsFlow().filterNotNull().collect {
                 handleEvent(it, viewStates)
             }
@@ -52,19 +52,19 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
      * 发送意图
      */
     fun sendIntent(viewIntent: I) {
-        viewModelScope.launch(Dispatchers.IO) {
+        launchIO {
             intentChannel.send(viewIntent)
         }
     }
 
-    fun launchIO(
+    protected fun launchIO(
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit,
     ) {
         viewModelScope.launch(Dispatchers.IO, start, block)
     }
 
-    fun launchUI(
+    protected fun launchUI(
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit,
     ) {
