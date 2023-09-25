@@ -21,6 +21,11 @@ dependencyResolutionManagement {
     }
 }
 
+//
+plugins {
+    id("com.highcapable.sweetdependency") version "1.0.1"
+}
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "FoodChoice"
 include(":app")

@@ -1,0 +1,156 @@
+# SweetDependency project configuration file
+# You can adjust your custom configuration to your liking here
+# You can visit https://github.com/HighCapable/SweetDependency for more help
+#
+# SweetDependency 项目配置文件
+# 你可以在这里调整你喜欢的自定义配置
+# 你可以前往 https://github.com/HighCapable/SweetDependency 以获得更多帮助
+
+# Configure preferences
+# 配置偏好设置
+preferences:
+  autowire-on-sync-mode: UPDATE_OPTIONAL_DEPENDENCIES
+  repositories-mode: FAIL_ON_PROJECT_REPOS
+
+# Configure repositories used by dependencies
+# 配置依赖使用的存储库
+repositories:
+  gradle-plugin-portal:
+    scope: PLUGINS
+  google:
+  maven-central:
+  aliyun-maven-public-mirror:
+
+# Configure plugins that need to be used
+# For example:
+# plugins:
+#   org.jetbrains.kotlin.jvm:
+#     version: +
+#
+# 配置需要使用的插件依赖
+# 例如:
+# plugins:
+#   org.jetbrains.kotlin.jvm:
+#     version: +
+plugins:
+  io.gitlab.arturbosch.detekt:
+    version: 1.23.1
+  com.android.application:
+    version: 8.1.1
+  org.jetbrains.kotlin.android:
+    version: 1.9.10
+  com.google.dagger.hilt.android:
+    version: 2.48
+  com.android.library:
+    version: 8.1.1
+  com.google.devtools.ksp:
+    version: 1.9.10-1.0.13
+
+# Configure libraries that need to be used
+# For example:
+# libraries:
+#   com.google.code.gson:
+#     gson:
+#       version: +
+#
+# 配置需要使用的库依赖
+# 例如:
+# libraries:
+#   com.google.code.gson:
+#     gson:
+#       version: +
+libraries:
+  androidx.test.ext:
+    junit:
+      version: 1.1.3
+  androidx.test.espresso:
+    espresso-core:
+      version: 3.4.0
+  com.google.dagger:
+    hilt-android:
+      version: 2.47
+    hilt-compiler:
+      version: 2.47
+  junit:
+    junit:
+      version: 4.13.2
+  androidx.hilt:
+    hilt-navigation-compose:
+      version: 1.0.0
+  org.jetbrains.kotlinx:
+    kotlinx-coroutines-android:
+      version: 1.6.4
+  androidx.navigation:
+    navigation-compose:
+      version: 2.5.3
+  androidx.core:
+    core-ktx:
+      version: 1.8.0
+
+  androidx.appcompat:
+    appcompat:
+      version: 1.4.1
+  com.google.android.material:
+    material:
+      version: 1.5.0
+  androidx.room:
+    room-runtime:
+      version: 2.4.3
+    room-ktx:
+      version: 2.4.3
+    room-compiler:
+      version: 2.4.3
+  androidx.compose:
+    compose-bom:
+      version: 2023.09.01
+  androidx.compose.ui:
+    ui-test-junit4:
+      version: <no-spec>
+#    ui:
+#      version: <no-spec>
+    ui-graphics:
+      version: <no-spec>
+    ui-tooling-preview:
+      version: <no-spec>
+#    ui-tooling:
+#      version: <no-spec>
+    ui-test-manifest:
+      version: <no-spec>
+  io.coil-kt:
+    coil-compose:
+      version: 2.4.0
+  com.google.accompanist:
+    accompanist-insets:
+      version: 0.28.0
+    accompanist-systemuicontroller:
+      version: 0.28.0
+  org.jetbrains.kotlin:
+    kotlin-bom:
+      version: 1.8.0
+  androidx.lifecycle:
+    lifecycle-runtime-ktx:
+      version: 2.3.1
+  androidx.activity:
+    activity-compose:
+      version: 1.7.2
+  androidx.compose.material:
+    material-icons-extended:
+      version: <no-spec>
+  androidx.compose.material3:
+    material3:
+      version: <no-spec>
+  com.airbnb.android:
+    lottie:
+      version: 6.1.0
+  com.squareup.retrofit2:
+    converter-moshi:
+      version: 2.9.0
+    converter-gson:
+      version: 2.9.0
+    retrofit:
+      version: 2.9.0
+  com.imcys.deeprecopy:
+    core:
+      version: 0.0.1-Beta-2
+    compiler:
+      version: 0.0.1-Beta-2

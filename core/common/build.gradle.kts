@@ -4,27 +4,39 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 }
-
 android {
     compileSdk = 34
 
     namespace = "com.imcys.core.common"
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
 }
 
 kapt {
     correctErrorTypes = true
 }
 
+
 dependencies {
     // hilt库，实现依赖注入
-    api("com.google.dagger:hilt-android:2.44")
+    api(libs.hilt.android)
+    kapt(libs.hilt.compiler)
     api("androidx.hilt:hilt-navigation-compose:1.0.0")
-
-    kapt("com.google.dagger:hilt-compiler:2.44")
     // 协程
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     // 路由
-    api("androidx.navigation:navigation-compose:2.5.3")
+    api("androidx.navigation:navigation-compose:2.7.3")
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.1")

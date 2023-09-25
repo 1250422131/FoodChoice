@@ -27,12 +27,15 @@ android {
             )
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -46,8 +49,8 @@ dependencies {
 implementation("com.imcys.deeprecopy:core:0.0.1-Beta-2")
     ksp("com.imcys.deeprecopy:compiler:0.0.1-Beta-2")
     // hilt库，实现依赖注入
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-compiler:2.44")
+    api(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     implementation("androidx.room:room-runtime:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")

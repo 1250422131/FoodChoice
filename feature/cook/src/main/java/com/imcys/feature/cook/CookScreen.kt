@@ -365,23 +365,19 @@ private fun TollFlow(
         )
 
         Spacer(modifier = Modifier.height(10.dp))
-        var mSelectedIndex by remember { mutableIntStateOf(-1) }
-
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             viewStates.cookingIngredientsEntity.filter { it.type == type }
-                .forEachIndexed { index, cookingIngredient ->
+                .forEachIndexed { _, cookingIngredient ->
 
                     ElevatedFilterChip(
                         selected = cookingIngredient.name == viewStates.searchTool,
                         label = { Text(cookingIngredient.name) },
                         onClick = {
                             if (cookingIngredient.name == viewStates.searchTool) {
-                                mSelectedIndex = -1
                                 viewModel.sendIntent(CookIntent.SelectTool(""))
                             } else {
-                                mSelectedIndex = index
                                 viewModel.sendIntent(CookIntent.SelectTool(cookingIngredient.name))
                             }
                         },

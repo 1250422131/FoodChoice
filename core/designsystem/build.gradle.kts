@@ -24,12 +24,16 @@ android {
             )
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -45,14 +49,12 @@ dependencies {
     api("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
 
     // kotlin依赖
-    api(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     api("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     api("androidx.activity:activity-compose:1.7.2")
 
     // compose
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.ui)
-    api(libs.androidx.compose.ui.ui.graphics)
     api(libs.androidx.compose.ui.ui.graphics)
     api(libs.androidx.compose.ui.ui.tooling.preview)
     api(libs.androidx.compose.material.material.icons.extended)

@@ -7,6 +7,17 @@ android {
     compileSdk = 34
 
     namespace = "com.imcys.core.network"
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
