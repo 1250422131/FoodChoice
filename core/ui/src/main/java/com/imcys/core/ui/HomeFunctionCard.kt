@@ -13,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.imcys.core.ui.base.getWidthSizeClass
 
 @Preview
 @Composable
@@ -36,11 +38,18 @@ fun HomeFunctionCard(
         .fillMaxWidth()
         .clickable { },
 ) {
+    val imageHeight = when (getWidthSizeClass()) {
+        WindowWidthSizeClass.Compact -> 124.dp
+        WindowWidthSizeClass.Medium -> 160.dp
+        WindowWidthSizeClass.Expanded -> 180.dp
+        else -> 180.dp
+    }
+
     Card(
         modifier = modifier,
     ) {
         Column(Modifier.fillMaxWidth()) {
-            Surface(Modifier.fillMaxWidth(), shape = CardDefaults.shape) {
+            Surface(shape = CardDefaults.shape) {
                 SubcomposeAsyncImage(
                     ImageRequest.Builder(LocalContext.current)
                         .data(faceUrl)
@@ -50,9 +59,10 @@ fun HomeFunctionCard(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(124.dp),
+                        .height(imageHeight),
                     error = {
                         Image(
+                            contentScale = ContentScale.Crop,
                             painter = painterResource(id = R.drawable.unnamed),
                             contentDescription = null,
                         )

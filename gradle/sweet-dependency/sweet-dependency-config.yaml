@@ -106,14 +106,14 @@ libraries:
   androidx.compose.ui:
     ui-test-junit4:
       version: <no-spec>
-#    ui:
-#      version: <no-spec>
+    ui:
+      version: <no-spec>
     ui-graphics:
       version: <no-spec>
     ui-tooling-preview:
       version: <no-spec>
-#    ui-tooling:
-#      version: <no-spec>
+    ui-tooling:
+      version: <no-spec>
     ui-test-manifest:
       version: <no-spec>
   io.coil-kt:

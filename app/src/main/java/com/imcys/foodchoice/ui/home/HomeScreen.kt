@@ -2,12 +2,13 @@ package com.imcys.foodchoice.ui.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.imcys.core.ui.HomeFunctionCard
+import com.imcys.core.ui.base.getWidthSizeClass
 
 private val LocalViewModel = compositionLocalOf<HomeViewModel> { error("No init!") }
 private val LocalViewState = compositionLocalOf<HomeState> { error("No init!") }
@@ -43,20 +45,29 @@ fun HomeScreen(
     val navController = LocalNavController.current
     val viewState = LocalViewState.current
 
-    LazyColumn(
-        modifier = modifier.padding(16.dp, 0.dp, 16.dp, 0.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+    LazyVerticalGrid(
+
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.padding(16.dp, 0.dp, 16.dp, 0.dp)
+            .fillMaxHeight(),
+        contentPadding = PaddingValues(10.dp),
+        columns = GridCells.Fixed(
+            when (getWidthSizeClass()) {
+                WindowWidthSizeClass.Compact -> 1
+                WindowWidthSizeClass.Medium -> 2
+                WindowWidthSizeClass.Expanded -> 3
+                else -> 3
+            },
+        ),
+        reverseLayout = false,
     ) {
-        item {
-            Spacer(modifier = Modifier.height(10.dp))
-        }
         items(viewState.homeItems) {
             HomeFunctionCard(
                 it.title,
                 it.content,
                 it.faceUrl,
                 Modifier
-                    .fillMaxWidth()
                     .clickable {
                         navController.navigate(it.route)
                     },

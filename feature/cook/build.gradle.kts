@@ -45,8 +45,7 @@ android {
 
 dependencies {
 
-
-implementation("com.imcys.deeprecopy:core:0.0.1-Beta-2")
+    implementation("com.imcys.deeprecopy:core:0.0.1-Beta-2")
     ksp("com.imcys.deeprecopy:compiler:0.0.1-Beta-2")
     // hilt库，实现依赖注入
     api(libs.hilt.android)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,12 +26,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -46,6 +50,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.imcys.core.common.utils.VibrationUtils
+import com.imcys.core.ui.base.getWidthSizeClass
 import com.imcys.foodchoice.MainActivityIntent
 import com.imcys.foodchoice.MainActivityState
 import com.imcys.foodchoice.MainActivityViewModel
@@ -93,6 +98,7 @@ private fun FoodAppScreen() {
             "app_index" -> {
                 viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(true))
             }
+
             else -> viewModel.sendIntent(MainActivityIntent.SetShowBottomBar(false))
         }
     }
@@ -108,14 +114,60 @@ private fun FoodAppScreen() {
             appBottomBar(viewStates, viewModel, scope, pageState)
         },
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            Spacer(modifier = Modifier.width(10.dp))
+        Row(modifier = Modifier.padding(it)) {
+            appNavigationRail(viewStates, viewModel, scope, pageState)
 
-            FCNavHost(
-                navController = navController,
-                modifier = Modifier.fillMaxSize(),
-                pageState = pageState,
-            )
+            Column {
+                Spacer(modifier = Modifier.width(10.dp))
+
+                FCNavHost(
+                    navController = navController,
+                    modifier = Modifier.fillMaxSize(),
+                    pageState = pageState,
+
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun appNavigationRail(
+    viewStates: MainActivityState,
+    mainActivityViewModel: MainActivityViewModel,
+    scope: CoroutineScope,
+    pageState: PagerState,
+) {
+    Row {
+        AnimatedVisibility(
+            viewStates.isShowBottomBar,
+        ) {
+            NavigationRail {
+                viewStates.navItems.forEachIndexed { index, navItem ->
+                    NavigationRailItem(
+                        icon = {
+                            Icon(
+                                imageVector =
+                                if (viewStates.navItemIndex == index) navItem.checked else navItem.unchecked,
+                                contentDescription = null,
+                            )
+                        },
+                        label = {
+                            Text(text = navItem.label)
+                        },
+                        selected = viewStates.navItemIndex == index,
+                        onClick = {
+                            mainActivityViewModel.sendIntent(
+                                MainActivityIntent.SelectNavItem(
+                                    index,
+                                ),
+                            )
+                            scope.launch { pageState.scrollToPage(index) }
+                        },
+                    )
+                }
+            }
         }
     }
 }
@@ -170,7 +222,7 @@ private fun appBottomBar(
 ) {
     Column {
         AnimatedVisibility(
-            viewStates.isShowBottomBar,
+            viewStates.isShowBottomBar && getWidthSizeClass() == WindowWidthSizeClass.Compact,
         ) {
             NavigationBar {
                 viewStates.navItems.forEachIndexed { index, navItem ->

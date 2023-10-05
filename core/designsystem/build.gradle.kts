@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    api(libs.androidx.material3.window.size)
 
     // 网络图片加载
     api("io.coil-kt:coil-compose:2.4.0")

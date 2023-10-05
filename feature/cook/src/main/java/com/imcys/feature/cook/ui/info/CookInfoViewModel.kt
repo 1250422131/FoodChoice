@@ -25,7 +25,7 @@ class CookInfoViewModel @Inject constructor(
             }
 
             is CookInfoIntent.ToBiliBiliPlay -> {
-                toBiliBiliPlay(event.bvId)
+                launchUI { toBiliBiliPlay(event.bvId) }
             }
         }
     }
@@ -46,7 +46,7 @@ class CookInfoViewModel @Inject constructor(
 
             Toast.makeText(context, "芜湖，前往B站", Toast.LENGTH_SHORT).show()
         } ?: apply {
-            Toast.makeText(context, "失败", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "呜哇，还没有装B站", Toast.LENGTH_SHORT).show()
         }
     }
 

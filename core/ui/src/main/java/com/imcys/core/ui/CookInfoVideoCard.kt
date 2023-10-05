@@ -2,7 +2,6 @@ package com.imcys.core.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +44,7 @@ fun CookInfoVideoCard(
     avatarUrl: String = "https://img1.imgtp.com/2023/07/08/z0tUwxLu.jpg",
     duration: Long = 0,
     view: Long = 0,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),

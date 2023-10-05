@@ -31,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -60,7 +59,7 @@ private val LocalViewModel = compositionLocalOf<CookViewModel> { error("No init!
 private val LocalViewState = compositionLocalOf<CookState> { error("No init!") }
 private val LocalNavController = compositionLocalOf<NavHostController> { error("No init!") }
 
-@OptIn(ExperimentalMaterial3Api ::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(
     name = "ElevatedFilterChip",
 )
@@ -68,7 +67,7 @@ private val LocalNavController = compositionLocalOf<NavHostController> { error("
 fun CookElevatedFilterChipPreview() {
     ElevatedFilterChip(
         selected = false,
-        label = { Text("菜品")        },
+        label = { Text("菜品") },
         onClick = {
         },
         leadingIcon = {
@@ -144,7 +143,7 @@ fun CookScreen(
                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {
+            ) {
                 CookingIngredientScreen()
             }
         }
@@ -190,7 +189,8 @@ fun CookingIngredientScreen() {
             )
 
             TollFlow(
-                "\uD83C\uDF73 再选一下厨具", CookingIngredientEntity.TOOL
+                "\uD83C\uDF73 再选一下厨具",
+                CookingIngredientEntity.TOOL,
             )
         }
 
@@ -258,8 +258,6 @@ private fun StuffFlow(
     val viewModel = LocalViewModel.current
     val viewStates = LocalViewState.current
     Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(10.dp))
-
         Text(
             text = title,
             fontSize = 16.sp,
@@ -302,8 +300,7 @@ private fun StuffFlow(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SearchTypeScreen(
-) {
+private fun SearchTypeScreen() {
     val viewModel = LocalViewModel.current
     val viewStates = LocalViewState.current
     Row(horizontalArrangement = Arrangement.Center) {

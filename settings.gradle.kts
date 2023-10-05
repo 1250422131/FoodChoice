@@ -22,9 +22,9 @@ dependencyResolutionManagement {
 }
 
 //
-plugins {
-    id("com.highcapable.sweetdependency") version "1.0.1"
-}
+//plugins {
+//    id("com.highcapable.sweetdependency") version "1.0.2"
+//}
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "FoodChoice"
