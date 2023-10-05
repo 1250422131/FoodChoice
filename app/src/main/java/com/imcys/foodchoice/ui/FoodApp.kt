@@ -141,7 +141,7 @@ private fun appNavigationRail(
 ) {
     Row {
         AnimatedVisibility(
-            viewStates.isShowBottomBar,
+            viewStates.isShowBottomBar && getWidthSizeClass() > WindowWidthSizeClass.Compact,
         ) {
             NavigationRail {
                 viewStates.navItems.forEachIndexed { index, navItem ->
