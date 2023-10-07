@@ -13,7 +13,9 @@ data class CookFoodInfo(
 ) : Serializable {
     data class Data(
         @Json(name = "bv")
-        val bv: String = "",
+        val bv: String? = "",
+        @Json(name = "description")
+        val description: String = "",
         @Json(name = "difficulty")
         val difficulty: String = "",
         @Json(name = "methods")
@@ -26,5 +28,7 @@ data class CookFoodInfo(
         val tags: String = "",
         @Json(name = "tools")
         val tools: String = "",
+        @Json(name = "url")
+        val url: String? = "",
     ) : Serializable
 }

@@ -13,6 +13,8 @@ data class CookFoodEntity(
     var id: Int = 0,
     @ColumnInfo(name = "bv")
     val bv: String,
+    @ColumnInfo(name = "description")
+    val description: String,
     @ColumnInfo(name = "difficulty")
     val difficulty: String,
     @ColumnInfo(name = "methods")
@@ -25,6 +27,8 @@ data class CookFoodEntity(
     val tags: String, // 广式
     @ColumnInfo(name = "tools")
     var tools: String, // 电饭煲
+    @ColumnInfo(name = "url")
+    var url: String, // 电饭煲
 ) {
     @Ignore
     var emoji: String = "" // 电饭煲

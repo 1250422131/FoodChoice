@@ -31,14 +31,25 @@ class CookingIngredientRepository @Inject constructor(
             isSuccess = true
         }.collect {
             it.data.meat.let { meat -> updateCheck(meat, CookingIngredientEntity.MEAT) }
-            it.data.staple.let { staple -> updateCheck(staple, CookingIngredientEntity.STAPLE) }
+            it.data.seasoning.let { seasoning ->
+                updateCheck(
+                    seasoning,
+                    CookingIngredientEntity.SEASONING,
+                )
+            }
             it.data.vegetable.let { vegetable ->
                 updateCheck(
                     vegetable,
                     CookingIngredientEntity.VEGETABLE,
                 )
             }
-            it.data.tools.let { tools -> updateCheck(tools, CookingIngredientEntity.TOOL) }
+            it.data.tag.let { tag -> updateCheck(tag, CookingIngredientEntity.TAG) }
+            it.data.difficulty.let { difficulty ->
+                updateCheck(
+                    difficulty,
+                    CookingIngredientEntity.DIFFICULTY,
+                )
+            }
         }
 
         return isSuccess

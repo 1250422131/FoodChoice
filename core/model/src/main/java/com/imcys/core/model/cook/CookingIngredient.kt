@@ -1,7 +1,6 @@
 package com.imcys.core.model.cook
 
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
 data class CookingIngredient(
     @Json(name = "emoji")

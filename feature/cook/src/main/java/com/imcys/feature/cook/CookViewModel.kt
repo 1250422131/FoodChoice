@@ -11,7 +11,6 @@ import com.imcys.core.database.entity.CookFoodEntity
 import com.imcys.feature.cook.menu.CookSearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +24,6 @@ class CookViewModel @Inject constructor(
     init {
         // appbar动画
         launchUI {
-            delay(200L)
             viewStates = viewStates.copy(isShowBottomBar = true)
         }
 

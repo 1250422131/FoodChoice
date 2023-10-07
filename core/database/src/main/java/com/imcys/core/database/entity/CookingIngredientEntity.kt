@@ -28,5 +28,8 @@ data class CookingIngredientEntity(
         const val MEAT = 2
         const val TOOL = 3
         const val STAPLE = 4 // 主食
+        const val SEASONING = 5
+        const val TAG = 6
+        const val DIFFICULTY = 7
     }
 }

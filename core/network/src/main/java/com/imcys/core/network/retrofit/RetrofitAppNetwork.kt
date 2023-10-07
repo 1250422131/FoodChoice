@@ -14,7 +14,7 @@ object RetrofitAppNetwork {
 
     val networkApi: RetrofitAppApi = Retrofit.Builder()
         .client(client)
-        .baseUrl("https://api.misakamoe.com/app/cook/")
+        .baseUrl("https://api.moeblog.vip/cook/")
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(RetrofitAppApi::class.java)

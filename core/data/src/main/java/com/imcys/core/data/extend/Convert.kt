@@ -7,13 +7,15 @@ import com.imcys.core.model.cook.CookingIngredient
 
 fun CookFoodInfo.Data.asCookFoodEntity() =
     CookFoodEntity(
-        bv = this.bv,
+        bv = this.bv ?: "",
+        description = this.description,
         difficulty = this.difficulty,
         methods = this.methods,
         name = this.name,
         stuff = this.stuff,
         tags = this.tags,
         tools = this.tools,
+        url = this.url ?: "",
     )
 
 fun CookingIngredient.asCookingIngredientEntity() =

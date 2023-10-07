@@ -15,6 +15,9 @@ class MainActivityViewModel : ComposeBaseViewModel<MainActivityState, MainActivi
             is MainActivityIntent.SetShowBottomBar -> {
                 viewStates.update { copy(isShowBottomBar = event.state) }
             }
+            is MainActivityIntent.SetOpenHelpDialog -> {
+                viewStates.update { copy(openHelpDialog = event.state) }
+            }
         }
     }
 

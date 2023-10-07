@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -30,6 +32,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
@@ -67,7 +70,6 @@ fun FoodApp(
     mainActivityViewModel: MainActivityViewModel,
 ) {
     val viewStates = mainActivityViewModel.viewStates
-
     // 全局路由
     val navController = rememberNavController()
 
@@ -115,6 +117,7 @@ private fun FoodAppScreen() {
         },
     ) {
         Row(modifier = Modifier.padding(it)) {
+            HelpDialog()
             appNavigationRail(viewStates, viewModel, scope, pageState)
 
             Column {
@@ -128,6 +131,35 @@ private fun FoodAppScreen() {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun HelpDialog() {
+    val viewModel = LocalViewModel.current
+    val viewStates = LocalViewState.current
+
+    if (viewStates.openHelpDialog) {
+        AlertDialog(
+            title = {
+                Text(text = "关于")
+            },
+            text = {
+                Text(text = "此APP由食选的master分支开发而来，仅供参赛使用，不代表食选的最终设计。")
+            },
+            onDismissRequest = {
+                viewModel.sendIntent(MainActivityIntent.SetOpenHelpDialog(false))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.sendIntent(MainActivityIntent.SetOpenHelpDialog(false))
+                    },
+                ) {
+                    Text("确定")
+                }
+            },
+        )
     }
 }
 
@@ -179,6 +211,8 @@ private fun appTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     context: Context,
 ) {
+    val viewModel = LocalViewModel.current
+
     Column {
         AnimatedVisibility(
             viewStates.isShowBottomBar,
@@ -200,10 +234,11 @@ private fun appTopBar(
                 actions = {
                     IconButton(onClick = {
                         VibrationUtils.performHapticFeedback(context)
+                        viewModel.sendIntent(MainActivityIntent.SetOpenHelpDialog(true))
                     }) {
                         Icon(
-                            imageVector = Icons.Outlined.AccountCircle,
-                            contentDescription = null,
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "帮助",
                         )
                     }
                 },

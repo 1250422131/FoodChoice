@@ -21,11 +21,13 @@ data class CookingIngredientsInfo(
     data class Data(
         @Json(name = "meat")
         val meat: List<CookingIngredient> = listOf(),
-        @Json(name = "staple")
-        val staple: List<CookingIngredient> = listOf(),
-        @Json(name = "tools")
-        val tools: List<CookingIngredient> = listOf(),
+        @Json(name = "seasoning")
+        val seasoning: List<CookingIngredient> = listOf(),
+        @Json(name = "tag")
+        val tag: List<CookingIngredient> = listOf(),
         @Json(name = "vegetable")
         val vegetable: List<CookingIngredient> = listOf(),
+        @Json(name = "difficulty")
+        val difficulty: List<CookingIngredient> = listOf(),
     )
 }

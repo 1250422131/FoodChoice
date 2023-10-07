@@ -16,4 +16,5 @@ data class MainActivityState(
     ),
     val titleState: Boolean = true,
     val isShowBottomBar: Boolean = true,
+    val openHelpDialog: Boolean = false,
 ) : UiState
