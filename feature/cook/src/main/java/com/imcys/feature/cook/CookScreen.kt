@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -52,6 +53,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
+import com.imcys.core.ui.base.getWidthSizeClass
 import com.imcys.feature.cook.menu.CookSearchType
 import com.imcys.feature.cook.navigation.navigateToCookInfoRoute
 
@@ -154,12 +156,13 @@ fun CookScreen(
  * 这个是当前页面的内容，事实上这里本来不需要采用LazyColumn。
  * 奈何FlowRow子项太多会导致界面卡顿，因此，这里被迫采用了LazyColumn。
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CookingIngredientScreen() {
     val navController = LocalNavController.current
     val viewModel = LocalViewModel.current
     val viewStates = LocalViewState.current
+    val windowSizeClass = getWidthSizeClass()
 
     LazyColumn(
         Modifier.fillMaxSize(),
@@ -220,30 +223,40 @@ fun CookingIngredientScreen() {
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(viewStates.searchResultList) {
-            // 搜索结果集
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                ElevatedFilterChip(
-                    selected = false,
-                    label = { Text(it.name) },
-                    onClick = {
-                        navController.navigateToCookInfoRoute(it.bv)
-                    },
-                    leadingIcon = {
-                        Text(text = it.emoji)
-                    },
-                    trailingIcon = {
-                        AsyncImage(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(it.image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier.size(15.dp),
-                            colorFilter = ColorFilter.tint(LocalContentColor.current),
+        if (windowSizeClass == WindowWidthSizeClass.Compact) {
+            items(viewStates.searchResultList) {
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+                    ElevatedFilterChip(
+                        selected = false,
+                        label = { Text(it.name) },
+                        onClick = {
+                            navController.navigateToCookInfoRoute(it.bv)
+                        },
+                        leadingIcon = {
+                            Text(text = it.emoji)
+                        },
+                    )
+                }
+            }
+        } else {
+            item {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    viewStates.searchResultList.forEach {
+                        ElevatedFilterChip(
+                            selected = false,
+                            label = { Text(it.name) },
+                            onClick = {
+                                navController.navigateToCookInfoRoute(it.bv)
+                            },
+                            leadingIcon = {
+                                Text(text = it.emoji)
+                            },
                         )
-                    },
-                )
+                    }
+                }
             }
         }
     }
