@@ -5,12 +5,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -26,8 +28,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.PermanentDrawerSheet
+import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -114,24 +119,88 @@ private fun FoodAppScreen() {
         bottomBar = {
             AppBottomBar(viewStates, viewModel, scope, pageState)
         },
+
     ) {
         Row(modifier = Modifier.padding(it)) {
             AppNavigationRail(viewStates, viewModel, scope, pageState)
-
-            Column {
-                Spacer(modifier = Modifier.width(10.dp))
-
-                FCNavHost(
-                    navController = navController,
-                    modifier = Modifier.fillMaxSize(),
-                    pageState = pageState,
-
-                )
+            if (getWidthSizeClass() == WindowWidthSizeClass.Expanded) {
+                AppPermanentNavigationDrawer(viewStates, viewModel, scope, pageState, navController)
+            } else {
+                AppContent(navController, pageState)
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AppContent(
+    navController: NavHostController,
+    pageState: PagerState,
+) {
+    Column {
+        Spacer(modifier = Modifier.width(10.dp))
+
+        FCNavHost(
+            navController = navController,
+            modifier = Modifier.fillMaxSize(),
+            pageState = pageState,
+        )
+    }
+}
+
+@Composable
+fun AppPermanentNavigationDrawer(
+    viewStates: MainActivityState,
+    mainActivityViewModel: MainActivityViewModel,
+    scope: CoroutineScope,
+    pageState: PagerState,
+    navController: NavHostController,
+) {
+    PermanentNavigationDrawer(
+        modifier = Modifier
+            .fillMaxHeight(),
+        drawerContent = {
+            Row {
+                AnimatedVisibility(
+                    viewStates.isShowBottomBar && getWidthSizeClass() == WindowWidthSizeClass.Expanded,
+                ) {
+                    PermanentDrawerSheet {
+                        viewStates.navItems.forEachIndexed { index, navItem ->
+                            NavigationDrawerItem(
+                                modifier = Modifier.padding(10.dp),
+                                icon = {
+                                    Icon(
+                                        imageVector =
+                                        if (viewStates.navItemIndex == index) navItem.checked else navItem.unchecked,
+                                        contentDescription = null,
+                                    )
+                                },
+                                label = {
+                                    Text(text = navItem.label)
+                                },
+                                selected = viewStates.navItemIndex == index,
+                                onClick = {
+                                    mainActivityViewModel.sendIntent(
+                                        MainActivityIntent.SelectNavItem(
+                                            index,
+                                        ),
+                                    )
+                                    scope.launch { pageState.scrollToPage(index) }
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        content = {
+            AppContent(navController, pageState)
+        },
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AppNavigationRail(
     viewStates: MainActivityState,
@@ -141,7 +210,7 @@ private fun AppNavigationRail(
 ) {
     Row {
         AnimatedVisibility(
-            viewStates.isShowBottomBar && getWidthSizeClass() > WindowWidthSizeClass.Compact,
+            viewStates.isShowBottomBar && getWidthSizeClass() == WindowWidthSizeClass.Medium,
         ) {
             NavigationRail {
                 viewStates.navItems.forEachIndexed { index, navItem ->
