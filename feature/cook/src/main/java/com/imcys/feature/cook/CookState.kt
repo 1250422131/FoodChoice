@@ -6,7 +6,7 @@ import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.feature.cook.menu.CookSearchType
 
 // 踩坑，务必让这里的属性是val而不是var，否则因为出现竞态条件造成线程不安全
-data class CookState constructor(
+data class CookState (
     val isShowBottomBar: Boolean = false,
     val cookingIngredientsEntity: MutableList<CookingIngredientEntity> = mutableListOf(),
     val searchStuffs: MutableList<String> = mutableListOf(),

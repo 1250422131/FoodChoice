@@ -1,5 +1,6 @@
 package com.imcys.feature.cook.ui.info
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -17,7 +18,7 @@ class CookInfoViewModel @Inject constructor(
     private val cookFoodInfoRepository: CookFoodInfoRepository,
     @ApplicationContext private val context: Context,
 
-) : ComposeBaseViewModel<CookInfoState, CookInfoIntent>(CookInfoState()) {
+    ) : ComposeBaseViewModel<CookInfoState, CookInfoIntent>(CookInfoState()) {
     override fun handleEvent(event: CookInfoIntent, state: CookInfoState) {
         when (event) {
             is CookInfoIntent.LoadFoodVideoInfo -> {
@@ -27,7 +28,23 @@ class CookInfoViewModel @Inject constructor(
             is CookInfoIntent.ToBiliBiliPlay -> {
                 launchUI { toBiliBiliPlay(event.bvId) }
             }
+
+            is CookInfoIntent.ToBiliBiliAs -> {
+                launchUI { toBiliBiliAs(event.context,event.bvId) }
+            }
         }
+    }
+
+    private fun toBiliBiliAs(context: Context,bvId: String) {
+
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, bvId) // 分享的文本内容
+            type = "text/plain"
+        }
+        val chooserIntent = Intent.createChooser(sendIntent, "分享到BILIBILIAS")
+        // 使用 context.startActivity 启动选择器
+        context.startActivity(chooserIntent)
     }
 
     /**

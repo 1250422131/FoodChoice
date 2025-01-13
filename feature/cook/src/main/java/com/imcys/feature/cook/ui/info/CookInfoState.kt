@@ -1,5 +1,7 @@
 package com.imcys.feature.cook.ui.info
 
+import android.app.Activity
+import android.content.Context
 import com.imcys.core.common.viewmodel.info.UiIntent
 import com.imcys.core.common.viewmodel.info.UiState
 import com.imcys.core.database.entity.CookFoodEntity
@@ -15,4 +17,5 @@ data class CookInfoState(
 sealed class CookInfoIntent : UiIntent {
     data class LoadFoodVideoInfo(val bvId: String) : CookInfoIntent()
     data class ToBiliBiliPlay(val bvId: String) : CookInfoIntent()
+    data class ToBiliBiliAs(val context: Context, val bvId: String) : CookInfoIntent()
 }

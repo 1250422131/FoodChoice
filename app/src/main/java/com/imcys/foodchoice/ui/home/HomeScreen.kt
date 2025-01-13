@@ -46,7 +46,6 @@ fun HomeScreen(
     val viewState = LocalViewState.current
 
     LazyVerticalGrid(
-
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.padding(16.dp, 0.dp, 16.dp, 0.dp)

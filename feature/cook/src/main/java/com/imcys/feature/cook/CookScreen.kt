@@ -45,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -54,6 +53,9 @@ import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.core.ui.PageContentColumn
 import com.imcys.feature.cook.menu.CookSearchType
 import com.imcys.feature.cook.navigation.navigateToCookInfoRoute
+import com.imcys.feature.cook.ui.info.CookInfoIntent
+import com.microsoft.appcenter.analytics.Analytics
+
 
 private val LocalViewModel = compositionLocalOf<CookViewModel> { error("No init!") }
 private val LocalViewState = compositionLocalOf<CookState> { error("No init!") }
@@ -142,7 +144,6 @@ fun CookScreen(
                     .fillMaxSize()
                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-
             ) {
                 CookingIngredientScreen()
             }
@@ -227,6 +228,7 @@ fun CookingIngredientScreen() {
                     selected = false,
                     label = { Text(it.name) },
                     onClick = {
+                        viewModel.sendIntent(CookIntent.PostOpenFoodInfo(it))
                         navController.navigateToCookInfoRoute(it.bv)
                     },
                     leadingIcon = {
@@ -250,7 +252,7 @@ fun CookingIngredientScreen() {
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 private fun StuffFlow(
     title: String,
     type: Int,
@@ -299,7 +301,6 @@ private fun StuffFlow(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SearchTypeScreen() {
     val viewModel = LocalViewModel.current
     val viewStates = LocalViewState.current

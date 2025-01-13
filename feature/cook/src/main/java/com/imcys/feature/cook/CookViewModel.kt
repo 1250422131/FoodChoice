@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import com.imcys.core.common.extend.launchIO
 import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import com.imcys.core.data.repository.cook.CookFoodInfoRepository
 import com.imcys.core.data.repository.cook.CookingIngredientRepository
 import com.imcys.core.database.entity.CookFoodEntity
 import com.imcys.feature.cook.menu.CookSearchType
+import com.microsoft.appcenter.analytics.Analytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -71,7 +74,17 @@ class CookViewModel @Inject constructor(
                 viewStates.update { copy(searchType = event.type) }
                 updateSearchResult()
             }
+            is CookIntent.PostOpenFoodInfo ->{postOpenFoodInfo(event.cookFoodEntity)}
         }
+    }
+
+    private fun postOpenFoodInfo(cookFoodEntity: CookFoodEntity) {
+       viewModelScope.launchIO {
+           val properties: MutableMap<String, String> = HashMap()
+           properties["FoodName"] = cookFoodEntity.name
+           properties["VideoBVID"] = cookFoodEntity.bv
+           Analytics.trackEvent("OpenFoodInfo", properties)
+       }
     }
 
     @SuppressLint("QueryPermissionsNeeded", "IntentReset")

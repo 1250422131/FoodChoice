@@ -104,7 +104,7 @@ private fun CookInfoVideoCardThumbnai(thumbnailUrl: String, duration: Long) {
 @Composable
 private fun CookInfoVideoCardAvatar(avatarUrl: String, title: String, content: String, view: Long) {
     Spacer(Modifier.height(10.dp))
-    Row(Modifier.fillMaxWidth().height(60.dp)) {
+    Row(Modifier.fillMaxWidth().height(70.dp), verticalAlignment = Alignment.CenterVertically) {
         Surface(
             shape = CircleShape,
         ) {
@@ -145,7 +145,7 @@ private fun CookInfoVideoCardAvatar(avatarUrl: String, title: String, content: S
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${view.digitalConversion()}  Views",
+                    text = "${view.digitalConversion()} 播放",
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 8.sp,
                 )

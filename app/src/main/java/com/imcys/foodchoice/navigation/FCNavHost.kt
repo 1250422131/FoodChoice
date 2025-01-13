@@ -1,8 +1,11 @@
 package com.imcys.foodchoice.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +28,6 @@ import com.imcys.foodchoice.ui.setting.SettingRoute
  * @param modifier Modifier
  * @param startDestination String
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FCNavHost(
     navController: NavHostController,
@@ -37,13 +39,29 @@ fun FCNavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
         popEnterTransition = {
-            EnterTransition.None
+            scaleIn(
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 35,
+                ),
+                initialScale = 1.1F,
+            ) + fadeIn(
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 35,
+                ),
+            )
         },
         popExitTransition = {
-            ExitTransition.None
+            scaleOut(
+                targetScale = 0.9F,
+            ) + fadeOut(
+                animationSpec = tween(
+                    durationMillis = 35,
+                    easing = CubicBezierEasing(0.1f, 0.1f, 0f, 1f),
+                ),
+            )
         },
     ) {
         composable("app_index") {

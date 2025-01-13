@@ -81,7 +81,7 @@ fun FoodApp(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun FoodAppScreen() {
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState(
@@ -104,18 +104,19 @@ private fun FoodAppScreen() {
     }
 
     val context = LocalContext.current
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     FullScreenScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            appTopBar(viewStates, scrollBehavior, context)
+            AppTopBar(viewStates, scrollBehavior, context)
         },
         bottomBar = {
-            appBottomBar(viewStates, viewModel, scope, pageState)
+            AppBottomBar(viewStates, viewModel, scope, pageState)
         },
     ) {
         Row(modifier = Modifier.padding(it)) {
-            appNavigationRail(viewStates, viewModel, scope, pageState)
+            AppNavigationRail(viewStates, viewModel, scope, pageState)
 
             Column {
                 Spacer(modifier = Modifier.width(10.dp))
@@ -131,9 +132,8 @@ private fun FoodAppScreen() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun appNavigationRail(
+private fun AppNavigationRail(
     viewStates: MainActivityState,
     mainActivityViewModel: MainActivityViewModel,
     scope: CoroutineScope,
@@ -163,7 +163,9 @@ private fun appNavigationRail(
                                     index,
                                 ),
                             )
-                            scope.launch { pageState.scrollToPage(index) }
+                            scope.launch {
+                                pageState.scrollToPage(index)
+                            }
                         },
                     )
                 }
@@ -174,7 +176,7 @@ private fun appNavigationRail(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun appTopBar(
+private fun AppTopBar(
     viewStates: MainActivityState,
     scrollBehavior: TopAppBarScrollBehavior,
     context: Context,
@@ -186,16 +188,10 @@ private fun appTopBar(
             CenterAlignedTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = {
-                    AnimatedVisibility(
-                        visible = viewStates.titleState,
-                        enter = slideInVertically(initialOffsetY = { -it }),
-                        exit = slideOutVertically(targetOffsetY = { -it }),
-                    ) {
-                        Text(
-                            overflow = TextOverflow.Ellipsis,
-                            text = viewStates.run { navItems[navItemIndex].label },
-                        )
-                    }
+                    Text(
+                        overflow = TextOverflow.Ellipsis,
+                        text = viewStates.run { navItems[navItemIndex].label },
+                    )
                 },
                 actions = {
                     IconButton(onClick = {
@@ -212,9 +208,8 @@ private fun appTopBar(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun appBottomBar(
+private fun AppBottomBar(
     viewStates: MainActivityState,
     mainActivityViewModel: MainActivityViewModel,
     scope: CoroutineScope,

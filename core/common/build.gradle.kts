@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 android {
@@ -23,20 +23,19 @@ android {
 
 }
 
-kapt {
-    correctErrorTypes = true
-}
 
 
 dependencies {
     // hilt库，实现依赖注入
     api(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     api("androidx.hilt:hilt-navigation-compose:1.0.0")
-    // 协程
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     // 路由
-    api("androidx.navigation:navigation-compose:2.7.3")
+    api("androidx.navigation:navigation-compose:2.8.5")
+
+    api("com.microsoft.appcenter:appcenter-analytics:5.0.4")
+    api("com.microsoft.appcenter:appcenter-crashes:5.0.4")
+    api("com.microsoft.appcenter:appcenter-distribute:5.0.4")
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.1")

@@ -12,6 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -24,7 +26,7 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
 
     /**
      * 界面状态初始化，这里没用flow，mutableState看上去已经帮我们完成了既定目的
-     * 你可以考虑在这里切换为MutableStateFlow，但感觉差不多
+     * 你可以考虑在这里切换为MutableStateFlow，但我仍然认为mutableStateOf对于Compose要更加发布
      */
     var viewStates by mutableStateOf(viewState)
         protected set
@@ -52,6 +54,8 @@ abstract class ComposeBaseViewModel<S : UiState, I : UiIntent>(viewState: S) :
      * 发送意图
      */
     fun sendIntent(viewIntent: I) {
+        
+
         launchIO {
             intentChannel.send(viewIntent)
         }

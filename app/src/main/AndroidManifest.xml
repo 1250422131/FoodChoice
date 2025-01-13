@@ -9,6 +9,7 @@
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
+        android:enableOnBackInvokedCallback="true"
         android:name=".FoodApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
