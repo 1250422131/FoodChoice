@@ -16,4 +16,6 @@ data class MainActivityState(
     ),
     val titleState: Boolean = true,
     val isShowBottomBar: Boolean = true,
+    val privacyPolicyState: Int = -1, // -1未知 0拒绝 1接受
+
 ) : UiState

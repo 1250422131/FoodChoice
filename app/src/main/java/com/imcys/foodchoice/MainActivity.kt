@@ -1,5 +1,7 @@
 package com.imcys.foodchoice
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -25,20 +27,32 @@ class MainActivity : BaseComponentActivity<MainActivity>() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         // 统计接入
-        AppCenter.start(
-            application,
-            "0391335a-2bae-4bef-ae0a-c23f592a7613",
-            Analytics::class.java,
-            Crashes::class.java,
-            Distribute::class.java
-        )
+        val shardedPreferences: SharedPreferences =
+            getSharedPreferences("app_config", Context.MODE_PRIVATE)
+        val privacyPolicyState = shardedPreferences.getInt("privacy_policy_state", -1)
+        if (privacyPolicyState == 1) {
+            AppCenter.start(
+                application,
+                "0391335a-2bae-4bef-ae0a-c23f592a7613",
+                Analytics::class.java,
+                Crashes::class.java,
+                Distribute::class.java
+            )
+        } else {
+            AppCenter.start(
+                application,
+                "0391335a-2bae-4bef-ae0a-c23f592a7613",
+                Distribute::class.java
+            )
+        }
+
         setContent {
             FoodChoiceTheme {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
 
-                ) {
+                    ) {
                     FoodApp(viewModel)
                 }
             }

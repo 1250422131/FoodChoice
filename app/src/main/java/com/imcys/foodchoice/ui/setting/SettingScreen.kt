@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.TripOrigin
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PrivacyTip
@@ -35,7 +36,9 @@ import androidx.navigation.NavHostController
 import com.imcys.core.ui.BaseSettingsItem
 import com.imcys.core.ui.CategorySettingsItem
 import com.imcys.core.ui.WaifuBoostAlertDialog
+import com.imcys.foodchoice.MainActivityIntent
 import com.imcys.foodchoice.R
+import com.imcys.foodchoice.ui.PrivacyPolicyDialog
 
 @Composable
 internal fun SettingRoute(
@@ -60,6 +63,7 @@ fun SettingScreen(
 ) {
     var showOriginalDialogState by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var showAgreePrivacyPolicyDialogState by remember { mutableStateOf(false) }
 
     LazyColumn(Modifier.fillMaxSize()) {
         item {
@@ -109,6 +113,22 @@ fun SettingScreen(
         }
         item {
             CategorySettingsItem(
+                text = "隐私"
+            )
+        }
+        item {
+
+            BaseSettingsItem(
+                painter = rememberVectorPainter(Icons.Default.PrivacyTip),
+                text = "隐私政策",
+                descriptionText = "你可以随时撤销你授权的隐私政策。",
+                onClick = {
+                    showAgreePrivacyPolicyDialogState = true
+                }
+            )
+        }
+        item {
+            CategorySettingsItem(
                 text = "开发者"
             )
         }
@@ -128,9 +148,22 @@ fun SettingScreen(
             )
         }
     }
+
+
     OriginalDialog(agreePrivacyPolicy = showOriginalDialogState, onClickConfirm = {
         showOriginalDialogState = false
     })
+
+    PrivacyPolicyDialog(
+        showAgreePrivacyPolicyDialogState,
+        onClickConfirm = {
+            showAgreePrivacyPolicyDialogState = false
+            viewModel.sendIntent(SettingIntent.SetPrivacyPolicyState(1))
+        },
+        onClickDismiss = {
+            showAgreePrivacyPolicyDialogState = false
+            viewModel.sendIntent(SettingIntent.SetPrivacyPolicyState(0))
+        })
 }
 
 
@@ -176,4 +209,3 @@ fun OriginalDialog(
         }
     )
 }
-

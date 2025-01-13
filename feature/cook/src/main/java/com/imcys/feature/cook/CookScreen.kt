@@ -231,6 +231,7 @@ fun CookingIngredientScreen() {
                         selected = false,
                         label = { Text(it.name) },
                         onClick = {
+                            viewModel.sendIntent(CookIntent.PostOpenFoodInfo(it))
                             navController.navigateToCookInfoRoute(it.bv)
                         },
                         leadingIcon = {
@@ -294,6 +295,9 @@ private fun StuffFlow(
                         onClick = {
                             mSelected = !mSelected
                             viewModel.sendIntent(CookIntent.SelectStuff(it.name))
+                            if (mSelected) {
+                                viewModel.sendIntent(CookIntent.PostSelectCookingIngredient(it))
+                            }
                         },
                         leadingIcon = {
                             if (it.image != null) {
@@ -389,6 +393,13 @@ private fun TollFlow(
                                 viewModel.sendIntent(CookIntent.SelectTool(""))
                             } else {
                                 viewModel.sendIntent(CookIntent.SelectTool(cookingIngredient.name))
+                            }
+                            if (cookingIngredient.name != viewStates.searchTool) {
+                                viewModel.sendIntent(
+                                    CookIntent.PostSelectCookingIngredient(
+                                        cookingIngredient
+                                    )
+                                )
                             }
                         },
                         leadingIcon = {

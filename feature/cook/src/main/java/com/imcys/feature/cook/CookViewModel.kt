@@ -10,6 +10,7 @@ import com.imcys.core.common.viewmodel.ComposeBaseViewModel
 import com.imcys.core.data.repository.cook.CookFoodInfoRepository
 import com.imcys.core.data.repository.cook.CookingIngredientRepository
 import com.imcys.core.database.entity.CookFoodEntity
+import com.imcys.core.database.entity.CookingIngredientEntity
 import com.imcys.feature.cook.menu.CookSearchType
 import com.microsoft.appcenter.analytics.Analytics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,17 +75,32 @@ class CookViewModel @Inject constructor(
                 viewStates.update { copy(searchType = event.type) }
                 updateSearchResult()
             }
-            is CookIntent.PostOpenFoodInfo ->{postOpenFoodInfo(event.cookFoodEntity)}
+
+            is CookIntent.PostOpenFoodInfo -> {
+                postOpenFoodInfo(event.cookFoodEntity)
+            }
+
+            is CookIntent.PostSelectCookingIngredient -> {
+                postSelectCookingIngredient(event.cookingIngredientEntity)
+            }
+        }
+    }
+
+    private fun postSelectCookingIngredient(cookingIngredientEntity: CookingIngredientEntity) {
+        viewModelScope.launchIO {
+            val properties: MutableMap<String, String> = HashMap()
+            properties["name"] = cookingIngredientEntity.name
+            Analytics.trackEvent("SelectCookingIngredient", properties)
         }
     }
 
     private fun postOpenFoodInfo(cookFoodEntity: CookFoodEntity) {
-       viewModelScope.launchIO {
-           val properties: MutableMap<String, String> = HashMap()
-           properties["FoodName"] = cookFoodEntity.name
-           properties["VideoBVID"] = cookFoodEntity.bv
-           Analytics.trackEvent("OpenFoodInfo", properties)
-       }
+        viewModelScope.launchIO {
+            val properties: MutableMap<String, String> = HashMap()
+            properties["FoodName"] = cookFoodEntity.name
+            properties["VideoBVID"] = cookFoodEntity.bv
+            Analytics.trackEvent("OpenFoodInfo", properties)
+        }
     }
 
     @SuppressLint("QueryPermissionsNeeded", "IntentReset")

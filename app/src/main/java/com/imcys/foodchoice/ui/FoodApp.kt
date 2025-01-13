@@ -1,6 +1,8 @@
 package com.imcys.foodchoice.ui
 
 import android.content.Context
+import android.text.method.LinkMovementMethod
+import android.widget.TextView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -20,6 +22,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -35,6 +38,7 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
@@ -47,19 +51,27 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.imcys.core.common.utils.VibrationUtils
+import com.imcys.core.ui.WaifuBoostAlertDialog
 import com.imcys.core.ui.base.getWidthSizeClass
 import com.imcys.foodchoice.MainActivityIntent
 import com.imcys.foodchoice.MainActivityState
 import com.imcys.foodchoice.MainActivityViewModel
+import com.imcys.foodchoice.R
 import com.imcys.foodchoice.navigation.FCNavHost
+import com.imcys.foodchoice.weight.Konfetti
+import com.imcys.foodchoice.weight.rememberKonfettiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -97,6 +109,7 @@ private fun FoodAppScreen() {
     val navController = LocalNavController.current
     val viewModel = LocalViewModel.current
     val viewStates = LocalViewState.current
+    val konfettiState = rememberKonfettiState(false)
 
     navController.addOnDestinationChangedListener { _, destination, _ ->
         when (destination.route) {
@@ -120,7 +133,7 @@ private fun FoodAppScreen() {
             AppBottomBar(viewStates, viewModel, scope, pageState)
         },
 
-    ) {
+        ) {
         Row(modifier = Modifier.padding(it)) {
             AppNavigationRail(viewStates, viewModel, scope, pageState)
             if (getWidthSizeClass() == WindowWidthSizeClass.Expanded) {
@@ -130,6 +143,21 @@ private fun FoodAppScreen() {
             }
         }
     }
+
+    PrivacyPolicyDialog(
+        viewStates.privacyPolicyState == -1,
+        onClickConfirm = {
+            viewModel.sendIntent(MainActivityIntent.SetPrivacyPolicyState(1))
+            konfettiState.value = true
+        },
+        onClickDismiss = {
+            viewModel.sendIntent(MainActivityIntent.SetPrivacyPolicyState(0))
+        })
+
+    Konfetti(
+        state = konfettiState,
+        Modifier.fillMaxSize()
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -200,7 +228,6 @@ fun AppPermanentNavigationDrawer(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AppNavigationRail(
     viewStates: MainActivityState,
@@ -358,3 +385,48 @@ fun TransparentSystemBars() {
         )
     }
 }
+
+@Composable
+fun PrivacyPolicyDialog(
+    agreePrivacyPolicy: Boolean,
+    onClickConfirm: () -> Unit,
+    onClickDismiss: () -> Unit,
+) {
+    WaifuBoostAlertDialog(
+        showState = agreePrivacyPolicy,
+        title = { Text(text = "隐私政策") },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.PrivacyTip,
+                contentDescription = "隐私政策"
+            )
+        },
+        text = {
+            val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
+
+            AndroidView(
+                factory = { TextView(it) },
+                update = {
+                    val tip =
+                        "食选目前并未接入自己的独立后台，因此需要借助第三方平台实现更新通知，目前使用的是微软的appcenter，它会匿名的上传APP使用数据，如地区、手机型号等，如果你拒绝这个数据收集，可能会导致APP无法收到更新，拒绝后你可以在B站关注我持续获得更新通知。".trimIndent()
+                    it.apply {
+                        it.setTextColor(textColor)
+                        text = HtmlCompat.fromHtml(tip, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        movementMethod = LinkMovementMethod.getInstance()
+                    }
+                }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onClickConfirm) {
+                Text(text = "接受")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onClickDismiss) {
+                Text(text = "拒绝")
+            }
+        }
+    )
+}
+

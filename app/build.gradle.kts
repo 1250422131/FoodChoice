@@ -63,6 +63,8 @@ dependencies {
     api(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.konfetti.compose)
+
     implementation(project(":core:common"))
     implementation(project(":core:network"))
     implementation(project(":core:designsystem"))
